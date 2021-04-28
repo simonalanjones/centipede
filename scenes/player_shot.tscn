@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://sprites/player/player_shot.png" type="Texture" id=1]
+[ext_resource path="res://scripts/Player_shot.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 0.961452, 3.38101 )
+
+[node name="PlayerShot" type="Area2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource( 2 )
+
+[node name="PlayerShot" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.482433, 3.39855 )
+shape = SubResource( 1 )
+
+[connection signal="area_entered" from="." to="." method="_on_PlayerShot_area_entered"]

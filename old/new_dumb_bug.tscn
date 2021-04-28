@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://old/new_dumb_bug.gd" type="Script" id=1]
+
+[node name="new_dumb_bug" type="Node2D"]
+script = ExtResource( 1 )
