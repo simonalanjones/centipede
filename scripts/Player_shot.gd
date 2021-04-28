@@ -14,5 +14,5 @@ func _process(_delta: float) -> void:
 	
 
 func _on_PlayerShot_area_entered(_area: Area2D) -> void:
-	#if area.get_class == "Mushroom":
+	####if area.get_class == "Mushroom":
 	queue_free()
