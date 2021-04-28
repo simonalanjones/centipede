@@ -18,7 +18,6 @@ var attack_wave:int = 12
 enum Directions { UP, DOWN, LEFT, RIGHT, STOP }
 
 
-
 func _ready() -> void:
 	rng.randomize()
 	new_attack_wave()
@@ -26,9 +25,6 @@ func _ready() -> void:
 	
 func new_attack_wave():
 	
-	
-	#print(13 - attack_wave)
-
 	var create_vars = {
 		'num_sections': 13 - attack_wave,
 		'x_position': 8*16,
@@ -53,7 +49,6 @@ func new_attack_wave():
 				spawn_x = rng.randi_range(1, 30)
 				if not cols_used.has(spawn_x):
 					break
-			#print(spawn_x)
 					
 			cols_used.append(spawn_x)
 			
@@ -134,6 +129,7 @@ func create_bug_from_nodes(nodes, direction):
 
 func _on_side_feed_triggered():
 	side_feed_triggered = true
+
 
 # this happens when all centipede links are destroyed
 func stop_side_feed() -> void:
