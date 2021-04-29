@@ -88,15 +88,9 @@ func move_in_current_direction():
 	
 	if int(position.x) %8 == 0:
 		if direction == Directions.LEFT and $RayCastLeft.is_colliding():
-			#$Label.set_text('hit')
 			has_collided = true
-		#elif direction == Directions.LEFT and !$RayCastLeft.is_colliding():
-		#	$Label.set_text('-')
 		elif direction == Directions.RIGHT and $RayCastRight.is_colliding():
-			#$Label.set_text('hit')
 			has_collided = true
-		#elif direction == Directions.RIGHT and !$RayCastRight.is_colliding():
-		#	$Label.set_text('-')
 
 	
 func move():
