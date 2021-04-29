@@ -18,9 +18,11 @@ var side_feed_triggered: bool = false
 
 var direction: int = Directions.RIGHT
 var last_direction: int = Directions.RIGHT
+
 # is the centipede in a overall downwards or upwards movement
 var main_direction: int = Directions.DOWN
-var has_collided:bool = true
+
+var has_collided:bool = false
 var speed_factor:int = 1
 
 func _ready():
@@ -83,6 +85,18 @@ func move_in_new_direction(new_direction: int) -> void:
 
 func move_in_current_direction():
 	position += movement_vectors[direction] * speed_factor
+	
+	if int(position.x) %8 == 0:
+		if direction == Directions.LEFT and $RayCastLeft.is_colliding():
+			#$Label.set_text('hit')
+			has_collided = true
+		#elif direction == Directions.LEFT and !$RayCastLeft.is_colliding():
+		#	$Label.set_text('-')
+		elif direction == Directions.RIGHT and $RayCastRight.is_colliding():
+			#$Label.set_text('hit')
+			has_collided = true
+		#elif direction == Directions.RIGHT and !$RayCastRight.is_colliding():
+		#	$Label.set_text('-')
 
 	
 func move():
@@ -121,7 +135,7 @@ func move():
 			
 				
 	elif direction == Directions.RIGHT:
-		if is_at_far_right_position():	
+		if is_at_far_right_position():
 					
 			if is_on_bottom_line() and main_direction == Directions.DOWN:
 				main_direction = Directions.UP
@@ -155,7 +169,8 @@ func _on_area_entered(area: Area2D) -> void:
 			# if the head is colliding with mushroom and travelling horizontally
 			if direction in [Directions.LEFT, Directions.RIGHT]:
 				has_collided = true
-				
+		
+		# move to move_in_current_direction???
 		elif area.get_class() == "Segment" or area.get_class() == "Head":
 			if area.get_parent() != get_parent() and direction in [Directions.LEFT, Directions.RIGHT]:
 				has_collided = true

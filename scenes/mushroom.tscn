@@ -4,7 +4,7 @@
 [ext_resource path="res://sprites/mushroom/mushroom_frame1.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 4.04257, 3.92711 )
+extents = Vector2( 5.0166, 3.92711 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 6.96382, 3.75091 )

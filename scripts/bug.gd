@@ -2,7 +2,7 @@ extends Node2D
 
 signal bug_hit
 
-var move_count_limit = 6
+var move_count_limit = 1
 var move_count = 0
 var speed_factor:int = 1 setget set_speed_factor, get_speed_factor
 
@@ -26,6 +26,15 @@ func get_speed_factor() -> int:
 	
 	
 func _process(_delta: float) -> void:
+	
+	if Input.is_action_just_released("ui_focus_next"):
+		move_count_limit = 100
+		print('next')
+	elif Input.is_action_just_released("ui_cancel"):
+		print('prev')
+		move_count_limit = 1
+	
+	
 	move_count += 1
 		
 	if move_count >= move_count_limit:

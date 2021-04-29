@@ -13,7 +13,7 @@ onready var side_feed_triggered: bool = false
 onready var cycles_per_side_feed_spawn: int = 180
 onready var cycle_count:int = 0
 
-var attack_wave:int = 12
+var attack_wave:int = 1
 
 enum Directions { UP, DOWN, LEFT, RIGHT, STOP }
 
@@ -27,10 +27,10 @@ func new_attack_wave():
 	
 	var create_vars = {
 		'num_sections': 13 - attack_wave,
-		'x_position': 8*16,
-		'y_position': 0,
+		'x_position': 8*26,
+		'y_position': 8,
 		'direction': Directions.RIGHT,
-		'speed_factor': 1
+		'speed_factor': 2
 	}
 
 	var bug = create_new_bug(create_vars)
@@ -55,9 +55,9 @@ func new_attack_wave():
 			create_vars = {
 				'num_sections': 1,
 				'x_position': 8 * spawn_x,
-				'y_position': 16,
+				'y_position': 8,
 				'direction': Directions.RIGHT,
-				'speed_factor': 2
+				'speed_factor': 1
 			}
 			
 			bug = create_new_bug(create_vars)
