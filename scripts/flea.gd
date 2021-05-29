@@ -1,20 +1,25 @@
 extends Area2D
 
 signal flea_left_screen
+signal spawned_mushroom(position)
 
-# call this function reference to spawn mushroom at flea position
-var mushroom_spawn:Reference
+const CLASS_NAME = "Flea"
+
 
 # fleas need to be hit twice to destroy
 var hits_taken:int = 0
 var speed_factor:int = 1
 
 
+func get_class() -> String:
+	return CLASS_NAME
+
+
 func _process(_delta: float) -> void:
 	if position.y < 256:
 		position.y += 1 * speed_factor
 		if randf() < 0.1 and position.y < 248:
-			mushroom_spawn.call_func(position)
+			emit_signal('spawned_mushroom', position)
 	else:
 		emit_signal('flea_left_screen')
 		queue_free()

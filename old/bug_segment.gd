@@ -6,7 +6,7 @@ onready var raycast_right = get_node("RayCastRight")
 var move_count_limit = 0
 
 
-class_name BugSegment
+#class_name BugSegment
 
 signal segment_hit
 

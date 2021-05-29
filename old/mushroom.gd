@@ -1,5 +1,6 @@
 extends Area2D
 
+signal mushroom_removed(position)
 const CLASS_NAME = "Mushroom"
 
 var frame_counter:int = 0
@@ -20,18 +21,11 @@ func _ready() -> void:
 	get_node("Sprite").texture = frames[frame_counter]
 
 
-func ____hit_by_missile():
-	frame_counter += 1
-	if frame_counter < frames.size()-1:
-		get_node("Sprite").texture = frames[frame_counter]
-	else:
-		queue_free()
-
-
 func _on_Mushroom_area_entered(area: Area2D) -> void:
 	if area.get_class() == "PlayerShot":
 		frame_counter += 1
 		if frame_counter < frames.size()-1:
 			get_node("Sprite").texture = frames[frame_counter]
 		else:
+			emit_signal("mushroom_removed", position)
 			queue_free()

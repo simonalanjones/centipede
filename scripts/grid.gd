@@ -1,5 +1,6 @@
 extends Node2D
 
+# this grid is for debugging purposes
 
 func _draw() -> void:
 	# draw vertical lines

@@ -9,19 +9,30 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Area2D",
-"class": "BugSegment",
+"base": "KinematicBody2D",
+"class": "BugBaseSegment",
 "language": "GDScript",
-"path": "res://old/bug_segment.gd"
+"path": "res://scripts/bug_base_segment.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "PlayerShot",
+"language": "GDScript",
+"path": "res://scripts/player_shot_k2d.gd"
 } ]
 _global_script_class_icons={
-"BugSegment": ""
+"BugBaseSegment": "",
+"PlayerShot": ""
 }
 
 [application]
 
 config/name="centipede"
+run/main_scene="res://scenes/game.tscn"
 config/icon="res://icon.png"
+
+[debug]
+
+settings/fps/force_fps=60
 
 [display]
 

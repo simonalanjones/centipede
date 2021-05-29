@@ -1,19 +1,20 @@
 extends Node2D
 
-
 onready var flea_scene: PackedScene = preload("res://scenes/flea.tscn")
-onready var mushroom_spawner = get_node("../mushroom_spawner")
 
 var rng = RandomNumberGenerator.new()
 var flea_in_motion:bool = false
 var get_score: Reference
-
+var infield_mushroom_count: Reference
+var mushroom_spawn: Reference
 
 func _ready() -> void:
 	rng.randomize()
 
 
-func required_mushrooms_in_infield(score) -> int:
+func required_mushrooms_in_infield() -> int:
+	var score = get_score.call_func()
+	
 	if score <= 20000:
 		return 5
 	elif score <= 120000:
@@ -23,23 +24,20 @@ func required_mushrooms_in_infield(score) -> int:
 
 	
 func _on_Timer_timeout() -> void:
-	# when mushrooms spawn they are added to a group if y position within infield area
-	var number_mushrooms_in_infield = get_tree().get_nodes_in_group("mushrooms_in_infield").size()
-	var score = get_score.call_func()
-	
-	if number_mushrooms_in_infield < required_mushrooms_in_infield(score) and flea_in_motion == false:
-		
+	# when mushrooms spawn they are added to an array if y position within infield area (lower 12 squares)
+	if infield_mushroom_count.call_func() < required_mushrooms_in_infield() and flea_in_motion == false:
 		flea_in_motion = true
 		var flea = flea_scene.instance()
-		var x = (rng.randi() % 29 ) * 8
-		var y = 16
-		flea.position = Vector2(x,y)
-		# give the flea a reference to the mushroom spawner function
-		flea.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
+		flea.position = Vector2((rng.randi() % 29 ) * 8, 16)
+		flea.connect("spawned_mushroom", self, "_on_flea_spawned_mushroom")
 		flea.connect('flea_left_screen', self, '_on_flea_exit_screen')
-		
 		add_child(flea)
 		
-func _on_flea_exit_screen():
+		
+func _on_flea_spawned_mushroom(mushroom_position: Vector2) -> void:
+	mushroom_spawn.call_func(mushroom_position)
+		
+		
+func _on_flea_exit_screen() -> void:
 	flea_in_motion = false
 	
