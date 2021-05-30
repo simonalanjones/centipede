@@ -9,12 +9,12 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "KinematicBody2D",
+"base": "Area2D",
 "class": "BugBaseSegment",
 "language": "GDScript",
 "path": "res://scripts/bug_base_segment.gd"
 }, {
-"base": "KinematicBody2D",
+"base": "Area2D",
 "class": "PlayerShot",
 "language": "GDScript",
 "path": "res://scripts/player_shot_k2d.gd"
@@ -81,6 +81,8 @@ toggle_fullscreen={
 2d_physics/layer_5="flea"
 2d_physics/layer_6="spider"
 2d_physics/layer_7="scorpion"
+2d_physics/layer_8="bug_head"
+2d_physics/layer_9="bug_body"
 
 [rendering]
 

@@ -1,6 +1,6 @@
 class_name BugBaseSegment
 
-extends KinematicBody2D
+extends Area2D
 
 signal segment_hit(segment)
 

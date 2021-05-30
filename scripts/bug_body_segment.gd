@@ -25,7 +25,7 @@ func move_to_target_position():
 
 func move_to_start_position():
 	position = start_position
-	print('start pos:' + str(start_position))
+	#print('start pos:' + str(start_position))
 	return position
 
 	
@@ -82,14 +82,15 @@ func _physics_process(_delta: float) -> void:
 				horizontal_direction = move_direction
 				
 			var velocity = movement_vectors[move_direction] * speed
-			var collision = move_and_collide(velocity)
-			if collision:
-				print('body segment collided')
-				print(collision.collider.get_class())
-				if collision.collider is PlayerShot:
-					hit()
-					print('was hit by player shot')
-					print('-----')
+			position += velocity
+			#var collision = move_and_collide(velocity)
+			#if collision:
+			#	print('body segment collided')
+			#	print(collision.collider.get_class())
+			#	if collision.collider is PlayerShot:
+			#		hit()
+			#		print('was hit by player shot')
+			#		print('-----')
 				
 			if position == target_position and has_reached_target == false:
 				has_reached_target = true
@@ -112,3 +113,19 @@ func get_move_direction():
 	else:
 		print('index:' + str(get_index()) + ' ERROR')
 
+
+
+#func _on_Area2D_body_entered(body: Node) -> void:
+#	if body is PlayerShot:
+#		#print('hit by player shot')
+#		hit()
+#		#body.queue_free()
+
+
+func _on_Area2D_area_entered(area: Area2D) -> void:
+	pass
+#	if area is PlayerShot:
+#		area.set_block_signals(true)
+#		area.queue_free()
+#		print('hit by player shot')
+#		hit()

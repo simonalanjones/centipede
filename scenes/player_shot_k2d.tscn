@@ -6,10 +6,10 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 0.493688, 2.96711 )
 
-[node name="KinematicBody2D" type="KinematicBody2D"]
+[node name="Area2D" type="Area2D"]
 process_priority = 1
 collision_layer = 8
-collision_mask = 113
+collision_mask = 499
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -19,3 +19,5 @@ centered = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0.498221, 2.99147 )
 shape = SubResource( 1 )
+
+[connection signal="area_entered" from="." to="." method="_on_Area2D_area_entered"]

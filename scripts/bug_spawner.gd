@@ -5,8 +5,8 @@ signal wave_complete
 var attack_wave:int = 1
 
 onready var bug_scene: PackedScene = preload("res://scenes/bug.tscn")
-onready var bug_body_scene: PackedScene = preload("res://scenes/bug_body_segment_k2d.tscn")
-onready var bug_head_scene: PackedScene = preload("res://scenes/bug_head_segment_k2d.tscn")
+onready var bug_body_scene: PackedScene = preload("res://scenes/bug_body_segment.tscn")
+onready var bug_head_scene: PackedScene = preload("res://scenes/bug_head_segment.tscn")
 onready var mushroom_spawner = get_node("/root/root/mushroom_spawner")
 
 onready var Rng = RandomNumberGenerator.new()
@@ -153,7 +153,8 @@ func create_bug_from_position_array(positions: Array, horizontal_direction: int)
 func _on_bug_hit(segment, bug):
 	
 	# put some conditional logic around if head or body segment then change pos
-	mushroom_spawn.call_func(segment.position.snapped(Vector2(8,8)))
+	var spawn_pos = segment.position.snapped(Vector2(8,8))
+	mushroom_spawn.call_func(spawn_pos)
 	
 	if bug.get_child_count() == 1:  # head only remaining
 		bug.queue_free()
@@ -166,7 +167,7 @@ func _on_bug_hit(segment, bug):
 
 
 func handle_head_segment_hit(head_segment, bug):
-	
+	bug.set_block_signals(true)
 	var new_bug = bug_scene.instance()
 	var new_bug_segment: BugBaseSegment
 	
@@ -193,10 +194,12 @@ func handle_head_segment_hit(head_segment, bug):
 	bug.queue_free() # remove old bug
 	new_bug.add_to_group("bugs") # add new bug
 	call_deferred("add_child", new_bug)
+	bug.set_block_signals(false)
 
 
 
 func handle_body_segment_hit(body_segment, bug):
+	bug.set_block_signals(true)
 	body_segment.queue_free()
 	var new_bug_segment: BugBaseSegment
 	var counter = 0
@@ -206,6 +209,7 @@ func handle_body_segment_hit(body_segment, bug):
 	
 	for n in range(0, bug.get_child_count()):
 		# look at segments with index higher than segment we hit
+		# handle segments left of collision
 		if bug.get_child(n).get_index() > body_segment.get_index():
 			
 			if counter == 0:
@@ -226,7 +230,16 @@ func handle_body_segment_hit(body_segment, bug):
 			new_bug_segment.connect('segment_hit', new_bug, '_on_segment_hit')
 			new_bug.add_child(new_bug_segment)
 			bug.get_child(n).queue_free()
-									
+		
+		else:
+			# handle segments right of collision
+			if bug.get_child(n).get_index() == 0:
+				bug.get_child(n).move_to_previous_boundary()
+			else:
+				bug.get_child(n).move_to_start_position()	
+
+			
+										
 	
 	if new_bug.get_child_count() > 0:
 		# warning-ignore:return_value_discarded
@@ -234,6 +247,7 @@ func handle_body_segment_hit(body_segment, bug):
 		new_bug.add_to_group("bugs")
 		call_deferred("add_child", new_bug)
 		
+	bug.set_block_signals(false)		
 			
 			
 func _on_side_feed_triggered() -> void:
