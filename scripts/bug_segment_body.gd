@@ -14,7 +14,7 @@ func _ready() -> void:
 	start_position = position
 
 func move():	
-	if can_move == true or Input.is_action_just_released("ui_accept"):
+	if can_move == true: #or Input.is_action_just_released("ui_accept"):
 		var velocity = get_move_vector() * speed
 		position += velocity
 		
@@ -168,7 +168,7 @@ func set_target_position(new_position: Vector2) -> void:
 	
 
 
-func _on_Area2D_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func __on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			print("body clicked (" + str(get_index()) + ")")

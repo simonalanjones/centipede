@@ -71,7 +71,12 @@ func stop_bug():
 	for n in get_children():
 		n.can_move = false
 			
-			
+
+
+func start_bug():
+	for n in get_children():
+		n.can_move = true
+				
 func get_speed_factor() -> int:
 	return speed_factor
 	

@@ -41,7 +41,7 @@ func spawn_mushroom_from_object(global_position: Vector2):
 # this has bug if fired for grid/screen position
 # need two functions:  spawn_mushroom_grid  spawn_mushroom_screen	
 func spawn_mushroom(mushroom_position: Vector2) -> void:
-	return
+	#return
 	# position from flea will be screen position not tilemap
 	if mushroom_position.x > 30 or mushroom_position.y > 30:
 		mushroom_position = mushroom_map.world_to_map(mushroom_position)

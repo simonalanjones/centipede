@@ -46,7 +46,7 @@ script = ExtResource( 17 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-frame = 2
+frame = 3
 playing = true
 centered = false
 
@@ -95,5 +95,3 @@ text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[connection signal="input_event" from="." to="." method="_on_Area2D_input_event"]

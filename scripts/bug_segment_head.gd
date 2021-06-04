@@ -1,12 +1,38 @@
 extends BugSegmentBase
 
 var check_map_function: Reference
+var previous_vars: Array = []
 
 
-func _ready() -> void:
-	#is_moving_horizontally = true
-	pass
+# this allows us to recall all the positional data at a previous position
+# when we hit the head we want to push it back to previous segment position
+func save_vars_to_array():
+	previous_vars.push_front({
+		'position' : position,
+		'vertical_direction' : vertical_direction,
+		'is_moving_vertically' : is_moving_vertically,
+		'is_moving_horizontally' : is_moving_horizontally,
+		'horizontal_direction' : horizontal_direction
+		})
 	
+	
+# remember to purge entries after certain size
+func get_data_at_position(position_required: Vector2):
+	for element in previous_vars:
+		if element.position == Vector2(position_required):
+			return element
+			
+	# if we haven't yet logged the position, use current data
+	return {
+		'position' : position,
+		'vertical_direction' : vertical_direction,
+		'is_moving_vertically' : is_moving_vertically,
+		'is_moving_horizontally' : is_moving_horizontally,
+		'horizontal_direction' : horizontal_direction	
+	}
+		
+	
+		
 func flip_horizontal_direction():
 	horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
 		
@@ -24,8 +50,9 @@ func check_for_mushroom_collision() -> bool:
 		
 
 func move():	
-	if can_move == true or Input.is_action_just_released("ui_end"):
+	if can_move == true:# or Input.is_action_just_released("ui_end"):
 		set_direction_vars()
+		save_vars_to_array()
 		var velocity = get_move_vector() * speed
 		position += velocity
 	
@@ -102,7 +129,7 @@ func set_direction_vars():
 	
 
 
-func _on_Area2D_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func __on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			print("head clicked (" + str(get_index()) + ")")

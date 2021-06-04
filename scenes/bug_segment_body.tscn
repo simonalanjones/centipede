@@ -55,7 +55,7 @@ shape = SubResource( 1 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
-frame = 6
+frame = 2
 playing = true
 centered = false
 
@@ -69,5 +69,3 @@ text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[connection signal="input_event" from="." to="." method="_on_Area2D_input_event"]
