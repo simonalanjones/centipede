@@ -5,8 +5,8 @@ signal wave_complete
 var attack_wave:int = 1
 
 onready var bug_scene: PackedScene = preload("res://scenes/bug.tscn")
-onready var bug_body_scene: PackedScene = preload("res://scenes/bug_body_segment.tscn")
-onready var bug_head_scene: PackedScene = preload("res://scenes/bug_head_segment.tscn")
+onready var bug_body_scene: PackedScene = preload("res://scenes/bug_segment_body.tscn")
+onready var bug_head_scene: PackedScene = preload("res://scenes/bug_segment_head.tscn")
 onready var mushroom_spawner = get_node("/root/root/mushroom_spawner")
 
 onready var Rng = RandomNumberGenerator.new()
@@ -31,7 +31,7 @@ func create_position_array(positions: int, build_direction: int, screen_start: V
 	var position_array:Array = []
 			
 	while position_array.size() < positions:
-		position_array.append(Vector2(screen_start).snapped(Vector2(8,8)))
+		position_array.append(Vector2(screen_start))    #.snapped(Vector2(8,8)))
 		if build_direction == Directions.LEFT:
 			screen_start += (Vector2.LEFT * 8)
 		else:
@@ -42,9 +42,10 @@ func create_position_array(positions: int, build_direction: int, screen_start: V
 	
 func new_attack_wave() -> void:
 	# number of body segments, build direction
-	var start_positions = create_position_array(12, Directions.LEFT, Vector2(64, 8))
+	var start_positions = create_position_array(12, Directions.LEFT, Vector2(66, 8))
 	# screen positions, moving direction
-	var bug = create_bug_from_position_array(start_positions, Directions.RIGHT)
+	var bug = create_bug_from_position_array(start_positions, Directions.RIGHT, Directions.DOWN)
+	bug.stop_bug()
 	bug.add_to_group("bugs")
 	call_deferred("add_child", bug)
 	
@@ -118,12 +119,12 @@ func create_bug_from_position_direction_array(positions: Array, horizontal_direc
 
 
 
-func create_bug_from_position_array(positions: Array, horizontal_direction: int):
+func create_bug_from_position_array(positions: Array, horizontal_direction: int, vertical_direction: int):
 
 	var bug = bug_scene.instance()
 	bug.set_speed_factor(1)
 	
-	var bug_segment: BugBaseSegment
+	var bug_segment#: BugBaseSegment
 	
 	for n in range(0, positions.size()):
 		
@@ -133,6 +134,9 @@ func create_bug_from_position_array(positions: Array, horizontal_direction: int)
 			bug_segment = bug_head_scene.instance()
 			# needed for when instancing first time
 			bug_segment.set_horizontal_direction(horizontal_direction)
+			bug_segment.set_vertical_direction(vertical_direction)
+			bug_segment.is_moving_horizontally = true
+			
 			#bug_segment.connect('side_feed_triggered', self, '_on_side_feed_triggered')
 			bug_segment.check_map_function = funcref(mushroom_spawner, "check_map_location")
 		else:
@@ -160,22 +164,140 @@ func _on_bug_hit(segment, bug):
 		bug.queue_free()
 	else:
 		if segment.get_index() == 0: # head segment is always index 0
-			handle_head_segment_hit(segment, bug)
+			new_handle_head_segment_hit(segment, bug)
 		else:
-			handle_body_segment_hit(segment, bug)
+			new_handle_body_segment_hit(segment, bug)
+			
+			
+			
+func new_handle_body_segment_hit(body_segment, bug):
 
+	bug.set_block_signals(true)
+	
+	var counter = 0
+	var new_bug = bug_scene.instance()
+	#new_bug.spawn_mushroom = funcref(mushroom_spawner, "spawn_mushroom_from_object")
+	
+	for n in range(0, bug.get_child_count()):
+				
+		var segment_in_loop = bug.get_child(n)
+		
+		# look at segments with index higher than segment we hit
+		if segment_in_loop.get_index() > body_segment.get_index():
+			
+			if counter == 0:
+				var new_head_segment = bug_head_scene.instance()
+				new_head_segment.vertical_direction = segment_in_loop.vertical_direction
+				new_head_segment.horizontal_direction = segment_in_loop.horizontal_direction
+				new_head_segment.is_moving_vertically = segment_in_loop.is_moving_vertically
+				new_head_segment.is_moving_horizontally = segment_in_loop.is_moving_horizontally
+				new_head_segment.check_map_function = funcref(mushroom_spawner, "check_map_location")
+				new_head_segment.position = segment_in_loop.position #.snapped(Vector2(8,8))
+				new_head_segment.modulate.a = 0.6
+				# warning-ignore:return_value_discarded
+				new_head_segment.connect('segment_hit', new_bug, '_on_segment_hit')
+				new_bug.add_child(new_head_segment)
+			else:
+				var new_body_segment = bug_body_scene.instance()
+				new_body_segment.vertical_direction = segment_in_loop.vertical_direction
+				new_body_segment.horizontal_direction = segment_in_loop.horizontal_direction
+				new_body_segment.is_moving_vertically = segment_in_loop.is_moving_vertically
+				new_body_segment.is_moving_horizontally = segment_in_loop.is_moving_horizontally
+				new_body_segment.position = segment_in_loop.position #.snapped(Vector2(8,8))
+				new_body_segment.modulate.a = 0.4
+				# warning-ignore:return_value_discarded
+				new_body_segment.connect('segment_hit', new_bug, '_on_segment_hit')
+				new_bug.add_child(new_body_segment)
+				
+			segment_in_loop.queue_free()
+			counter += 1
+			#var new_position = bug.get_child(n).move_to_start_position()
+			#new_bug_segment.position = new_position
+	
+			#new_bug.add_child(new_bug_segment)
+			#bug.get_child(n).queue_free()
+			
+										
+	
+	if new_bug.get_child_count() > 0:
+		# warning-ignore:return_value_discarded
+		new_bug.connect("bug_hit", self, "_on_bug_hit")
+		new_bug.add_to_group("bugs")
+		#new_bug.stop_bug()
+		call_deferred("add_child", new_bug)
+	
+	#body_segment.queue_free()
+	body_segment.queue_free()
+	bug.set_block_signals(false)		
+	#bug.queue_free()    # temp remove original bug to concentrate on secondary
+	
+	
+func new_handle_head_segment_hit(head_segment, bug):
+	#bug.set_block_signals(true)	
+	#head_segment.queue_free()
+	for n in range(0, bug.get_child_count()-1):
+		
+		if n != 0:
+			bug.get_child(n).position = bug.get_child(n+1).position
+		else:
+			var position_data = bug.get_head().previous_vars
+			var previous_position = bug.get_child(n+1).position
+			#print('previous position:' + str(previous_position))
+			for element in position_data:
+				if element.position == Vector2(previous_position):
+					#print('found:' + str(element))
+					
+					bug.get_head().position = Vector2(element.position)
+					bug.get_head().is_moving_horizontally = element.is_moving_horizontally
+					bug.get_head().is_moving_vertically = element.is_moving_vertically
+					bug.get_head().vertical_direction = element.vertical_direction
+					bug.get_head().horizontal_direction = element.horizontal_direction
+					
+			
+		
+		#if n == 0:
+		#	bug.get_child(n).vertical_direction = bug.get_child(n+1).vertical_direction
+		#	
+		#else:
+		#if n != 0:
+		#	bug.get_child(n).horizontal_direction = bug.get_child(n+1).horizontal_direction
+		#	bug.get_child(n).is_moving_vertically = bug.get_child(n+1).is_moving_vertically
+		#	bug.get_child(n).is_moving_horizontally = bug.get_child(n+1).is_moving_horizontally
+			
+		
+	var last = bug.get_child_count()-1
+	bug.get_child(last).queue_free()
+	# bug head isn't reset to boundary but body segments are
+	# have a system for body segments then no need to set target positions
+	
+	bug.set_body_target_positions()  
+	
+
+
+	
+		
+		
 
 
 func handle_head_segment_hit(head_segment, bug):
 	bug.set_block_signals(true)
 	var new_bug = bug_scene.instance()
+	new_bug.set_block_signals(true)
+	#new_bug.spawn_mushroom = funcref(mushroom_spawner, "spawn_mushroom_from_object")
 	var new_bug_segment: BugBaseSegment
+	
+	
+	## try alternative
+	## place all segments in range 0, child_count()-1
+	## to position of previous segment
 	
 	for n in range(0, bug.get_child_count()-1):
 
 		if n == 0:
 			new_bug_segment = bug_head_scene.instance()
 			new_bug_segment.vertical_direction = head_segment.vertical_direction
+			
+			# should check placement
 			new_bug_segment.horizontal_direction = head_segment.horizontal_direction
 			new_bug_segment.is_moving_vertically = head_segment.is_moving_vertically
 			new_bug_segment.is_moving_horizontally = head_segment.is_moving_horizontally
@@ -190,20 +312,26 @@ func handle_head_segment_hit(head_segment, bug):
 		new_bug_segment.position = new_position
 		new_bug.add_child(new_bug_segment)
 	
+	#for n in new_bug.get_children():
+	#	var pos = n.position
+	#	print(str(n) + ':' + str(pos))
+	#print('----')
+	
 	new_bug.connect("bug_hit", self, "_on_bug_hit")
 	bug.queue_free() # remove old bug
 	new_bug.add_to_group("bugs") # add new bug
 	call_deferred("add_child", new_bug)
 	bug.set_block_signals(false)
-
-
+	new_bug.set_block_signals(false)
 
 func handle_body_segment_hit(body_segment, bug):
 	bug.set_block_signals(true)
-	body_segment.queue_free()
+	
 	var new_bug_segment: BugBaseSegment
 	var counter = 0
 	var new_bug = bug_scene.instance()
+	#new_bug.spawn_mushroom = funcref(mushroom_spawner, "spawn_mushroom_from_object")
+	
 	var existing_bug_head = bug.get_child(0)
 	
 	
@@ -246,7 +374,8 @@ func handle_body_segment_hit(body_segment, bug):
 		new_bug.connect("bug_hit", self, "_on_bug_hit")
 		new_bug.add_to_group("bugs")
 		call_deferred("add_child", new_bug)
-		
+	
+	body_segment.queue_free()	
 	bug.set_block_signals(false)		
 			
 			
@@ -282,7 +411,7 @@ func spawn_side_feed() -> void:
 		
 	
 	var start_positions = create_position_array(1, direction, Vector2(start_x, 23 * 8))
-	var bug = create_bug_from_position_array(start_positions, Directions.LEFT)
+	var bug = create_bug_from_position_array(start_positions, Directions.LEFT, Directions.DOWN)
 	
 	bug.add_to_group("bugs")
 	call_deferred("add_child", bug)

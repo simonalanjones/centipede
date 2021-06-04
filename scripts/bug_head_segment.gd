@@ -1,23 +1,50 @@
 extends BugBaseSegment
 
 #signal side_feed_triggered
+var previous_vars: Array = []
+
+"""
+array hold:
+* position
+* vertical_direction
+* is_moving_vertically
+* is_moving_horizontally
+* horizontal_direction (from bug_base)
+"""
 
 
 var side_feed_triggered: bool = false
-#var last_direction: int = Directions.RIGHT
 
 # is the centipede in a overall downwards or upwards movement
 var vertical_direction: int = Directions.DOWN
 var is_moving_vertically:bool = false
 var is_moving_horizontally:bool = true
 
-#var screen_edge_flag:bool = false
 
 var check_map_function: Reference
 
 var raycast_suspended:bool = false
 onready var previous_boundary_position: Vector2 = position
 
+
+#func _ready():
+#	save_vars_to_array()
+	
+	
+func save_vars_to_array():
+	previous_vars.push_front({
+		'position' : position,
+		'vertical_direction' : vertical_direction,
+		'is_moving_vertically' : is_moving_vertically,
+		'is_moving_horizontally' : is_moving_horizontally,
+		'horizontal_direction' : horizontal_direction
+		})
+	
+	
+func clear_previous_vars():
+	previous_vars = []
+	
+	
 func _to_string() -> String:
 	return "Bug head segment"	
 
@@ -27,7 +54,6 @@ func move_to_next_boundary():
 		set_direction_vars()
 		var velocity = get_move_vector() * speed
 		position += velocity
-		#var _a = move_and_collide(velocity)
 	return position
 	
 	
@@ -36,7 +62,6 @@ func move_to_previous_boundary():
 	return position
 	
 		
-
 
 func is_moving_left() -> int:
 	return horizontal_direction == Directions.LEFT and is_moving_horizontally == true
@@ -99,8 +124,8 @@ func suspend_raycast():
 	raycast_suspended = false
 	
 	
-func _physics_process(_delta: float) -> void:
-	
+#func _physics_process(_delta: float) -> void:
+func move():	
 	get_node("/root/root/is_moving_vertically").set_text(str(is_moving_vertically))
 	get_node("/root/root/is_moving_horizontally").set_text(str(is_moving_horizontally))
 	get_node("/root/root/is_on_grid_boundary").set_text(str(is_on_grid_boundary()))
@@ -111,28 +136,33 @@ func _physics_process(_delta: float) -> void:
 	
 	if can_move == true: #and cycles >= cycles_limit:
 		set_direction_vars()
+		save_vars_to_array()
 		#cycles = 0
 		var velocity = get_move_vector() * speed
-		#print('vel of head move:' + str(velocity))
 		position += velocity
-		#var collision = move_and_collide(velocity)
-		#if collision:
-		#	print('body head collided')
-		#	print(collision.collider.get_class())
-		#	if collision.collider is PlayerShot:
-		#		hit()
-		#		print('was hit by player shot')
-		#		print('-----')
-	else:
-		cycles += 1
+		
+	#else:
+	#	cycles += 1
 
 
 func set_direction_vars() -> void:
 	
+	if is_at_screen_edge() or is_on_grid_boundary():
+		pass
+		# if size of previous_vars >= 16
+		# remove back 8
+		#
+		#print(previous_vars)
+		#print(previous_vars.size())
+		#clear_previous_vars()
+		#print('-----')
+	
 	if is_at_screen_edge():
-		
+				
 		if is_on_bottom_line() and vertical_direction == Directions.DOWN:
+			#print('here..')
 			vertical_direction = Directions.UP
+		
 		
 		if is_moving_vertically == false:
 			
@@ -148,6 +178,7 @@ func set_direction_vars() -> void:
 			
 		else:
 			if is_on_grid_boundary():
+				#print('at boundary:' + str(position))
 				is_moving_vertically = false
 				is_moving_horizontally = true
 			
@@ -170,24 +201,29 @@ func set_direction_vars() -> void:
 			vertical_direction = Directions.DOWN 
 		
 		# check raycasts
-		elif is_moving_left() and $RayCastLeft.is_colliding() and raycast_suspended == false:
-				#print('ray left collision')
-				#print($RayCastLeft.get_collider())
-				is_moving_vertically = true
-				if is_on_bottom_line():
-					vertical_direction = Directions.UP
-				is_moving_horizontally = false
-				horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
+		#elif is_moving_left() and $RayCastLeft.is_colliding() and $RayCastLeft.get_collider().get_parent() != get_parent():
+		#		print('ray left collision')
+		#		print('parent:' + str(get_parent().get_instance_id()))
+		#		print('collider parent:' + str($RayCastLeft.get_collider().get_parent().get_instance_id()))
+		#		print('-----')
+		#		is_moving_vertically = true
+		#		if is_on_bottom_line():
+		#			vertical_direction = Directions.UP
+		#		is_moving_horizontally = false
+		#		horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
 				#$RayCastLeft.get_collider().suspend_raycast()
 			
-		elif is_moving_right() and $RayCastRight.is_colliding() and raycast_suspended == false:
-				#print('ray right collision')
-				#print($RayCastRight.get_collider())
-				is_moving_vertically = true
-				if is_on_bottom_line():
-					vertical_direction = Directions.UP
-				is_moving_horizontally = false
-				horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
+		#elif is_moving_right() and $RayCastRight.is_colliding() and $RayCastRight.get_collider().get_parent() != get_parent():
+		#		print('ray right collision')
+		#		#print($RayCastRight.get_collider().get_parent())
+		#		print('parent:' + str(get_parent().get_instance_id()))
+		#		print('collider parent:' + str($RayCastRight.get_collider().get_parent().get_instance_id()))
+		#		print('-----')
+		#		is_moving_vertically = true
+		#		if is_on_bottom_line():
+		#			vertical_direction = Directions.UP
+		#		is_moving_horizontally = false
+		#		horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
 				#$RayCastRight.get_collider().suspend_raycast()
 		
 		elif check_for_mushroom_collision() == true:
@@ -205,14 +241,7 @@ func set_direction_vars() -> void:
 				
 		
 	
-	else:
-		pass
-	
-	
-		
-		
-
-func _set_direction_vars() -> void:
+func __set_direction_vars() -> void:
 	#
 	# if at screen edge we need to change direction etc
 	#
@@ -341,163 +370,3 @@ func get_move_vector() -> Vector2:
 
 		
 
-
-func __get_move_vector() -> Vector2:
-	
-	# if at screen edge we need to change direction etc
-	if is_at_screen_edge():
-							
-		# first cycle at screen edge
-		if is_moving_vertically == true:
-			return movement_vectors[vertical_direction]
-		else:
-			# subsequent cycles at screen edge
-			#if is_on_grid_boundary():
-			return movement_vectors[horizontal_direction]
-			#else:
-			#	return movement_vectors[vertical_direction]
-	
-	#			
-	# if on grid boundary we check for mushroom collisions				
-	#
-	elif is_on_grid_boundary() and check_for_mushroom_collision() == true:
-		print('grid')
-		return movement_vectors[vertical_direction]
-
-
-	elif is_on_grid_boundary() and is_moving_vertically == true:
-		print('here')
-		return movement_vectors[horizontal_direction]
-			
-#		elif is_moving_vertically == true:
-#			return movement_vectors[horizontal_direction]
-#		else:
-#			return movement_vectors[horizontal_direction]
-	
-	# not at screen edge or on a grid boundary - normal move	
-	
-	else:
-		if is_moving_vertically == true:
-			return movement_vectors[vertical_direction]
-		else:
-			return movement_vectors[horizontal_direction]
-		
-
-
-
-func get_move_vector_original() -> Vector2:
-	
-	# if at screen edge we need to change direction etc
-	if is_at_screen_edge():
-			
-		if is_on_bottom_line() and vertical_direction == Directions.DOWN:
-			vertical_direction = Directions.UP
-				
-		# first cycle at screen edge
-		if is_moving_vertically == false:
-			horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
-			set_ortientation()
-			is_moving_vertically = true
-			return movement_vectors[vertical_direction]
-			
-		else:
-			# subsequent cycles at screen edge
-			if is_on_grid_boundary():
-				is_moving_vertically = false
-				return movement_vectors[horizontal_direction]
-			else:
-				return movement_vectors[vertical_direction]
-				
-	# if on grid boundary we check for mushroom collisions				
-	elif is_on_grid_boundary():
-
-		if is_within_outfield() and vertical_direction == Directions.UP:
-			vertical_direction = Directions.DOWN
-					
-		if check_for_mushroom_collision() == true:
-			horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
-			set_ortientation()
-			is_moving_vertically = true
-			return movement_vectors[vertical_direction]
-			
-		elif is_moving_vertically == true:
-			is_moving_vertically = false
-			return movement_vectors[horizontal_direction]
-		else:
-			return movement_vectors[horizontal_direction]
-	
-	# not at screen edge or on a grid boundary - normal move	
-	else:
-		if is_moving_vertically == true:
-			return movement_vectors[vertical_direction]
-		else:
-			return movement_vectors[horizontal_direction]
-		
-		
-					
-"""
-func move(speed_factor: int) -> void:
-	
-	velocity = Vector2.ZERO
-	
-	# if at screen edge we need to change direction etc
-	if is_at_screen_edge():
-			
-		if is_on_bottom_line() and vertical_direction == Directions.DOWN:
-			vertical_direction = Directions.UP
-				
-		# first cycle at screen edge
-		if is_moving_vertically == false:
-			horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
-			set_ortientation()
-			is_moving_vertically = true
-			move_in_vertical_direction(speed_factor)
-		else:
-			# subsequent cycles at screen edge
-			if is_on_grid_boundary():
-				move_in_horizontal_direction(speed_factor)
-				is_moving_vertically = false
-			else:
-				move_in_vertical_direction(speed_factor)
-				
-	# if on grid boundary we check for mushroom collisions				
-	elif is_on_grid_boundary():
-
-		if is_within_outfield() and vertical_direction == Directions.UP:
-			vertical_direction = Directions.DOWN
-					
-		if check_for_mushroom_collision() == true:
-			horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
-			set_ortientation()
-			is_moving_vertically = true
-			move_in_vertical_direction(speed_factor)
-			
-		elif is_moving_vertically == true:
-			is_moving_vertically = false
-			
-		else:
-			move_in_horizontal_direction(speed_factor)
-	
-	# not at screen edge or on a grid boundary - normal move	
-	else:
-		if is_moving_vertically == true:
-			move_in_vertical_direction(speed_factor)
-		else:
-			move_in_horizontal_direction(speed_factor)
-"""
-
-
-#func _on_Area2D_body_entered(body: Node) -> void:
-#	if body is PlayerShot:
-#		print('hit by player shot')
-#		hit()
-#		#body.queue_free()
-
-
-func _on_Area2D_area_entered(area: Area2D) -> void:
-	if area is PlayerShot:
-		pass
-	#	area.set_block_signals(true)
-	#	area.queue_free()
-	#	print('hit by player shot')
-	#	hit()

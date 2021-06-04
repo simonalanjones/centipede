@@ -8,15 +8,55 @@ var speed_factor:int = 60 setget set_speed_factor, get_speed_factor
 
 func _ready():
 	set_body_target_positions()
-	#yield(get_tree(), "idle_frame")
-	#for n in get_children():
-	#	print(str(n) + ":" + str(global_position))
+	#stop_bug()
 
+
+func _process(_delta: float) -> void:
+	get_head().move()
+	
+	for n in range(1, get_child_count()):
+		get_child(n).move()
+	
+	if get_head().is_on_grid_boundary():
+		set_body_target_positions()
+		
+	#if has_moved_all_body_segments() and get_head().is_on_grid_boundary():
+	#	set_body_target_positions()
+	
+
+func has_moved_all_body_segments() -> bool:
+	var all_moved_state = true	
+	for n in range(1, get_child_count()):
+		if get_child(n).has_reached_target_position() == false:
+			all_moved_state = false
+	return all_moved_state
+	
+	
+func set_body_target_positions():
+	# set target position on each body segment (not head) starting from index 1
+	# assign target position to current position of previous segment
+	#print('head:' + str(get_child(0).position))
+	
+	for n in range(1, get_child_count()):
+		var target_dict = {
+			'target_position' : get_child(n-1).position,
+			'is_moving_horizontally' : get_child(n-1).is_moving_horizontally,
+			'is_moving_vertically' : get_child(n-1).is_moving_vertically
+		}
+		
+		get_child(n).set_target_data(target_dict)
+	#print('--------------')	
+	#print('----')
+		#get_child(n).set_target_position(get_child(n-1).position)
+		#	print('child ' + str(n) + ' position:' + str(get_child(n).position))
+		#	print('child ' + str(n) + ' target:' + str(get_child(n-1).position))
+		#print('----')
+		
 
 func get_head():
 	return get_child(0)
 	
-	
+
 # speed factor can be 1 or 2 (slow/fast)
 func set_speed_factor(speed: int) -> void:	
 	if speed > 2:
@@ -27,7 +67,7 @@ func set_speed_factor(speed: int) -> void:
 		speed_factor = 60 * speed
 
 
-func _stop_bug():
+func stop_bug():
 	for n in get_children():
 		n.can_move = false
 			
@@ -45,37 +85,7 @@ func _physics_process(_delta: float) -> void:
 		for n in get_children():
 			n.can_move = false
 				
-	if has_moved_all_body_segments() and get_head().is_on_grid_boundary():
-		set_body_target_positions()
-
-
-func has_moved_all_body_segments() -> bool:
-	var all_moved_state = true	
-	for n in range(1, get_child_count()):
-		if get_child(n).has_reached_target_position() == false:
-			all_moved_state = false
-	return all_moved_state
-	
-	
-func set_body_target_positions():
-	# set target position on each body segment (not head) starting from index 1
-	# assign target position to current position of previous segment
-	for n in range(1, get_child_count()): 
-		get_child(n).set_target_position(get_child(n-1).position)
-		#print(str(get_child(n).position))
-		
-
 	
 func _on_segment_hit(segment:Node):
+	emit_signal("bug_hit", segment, self)
 	
-	# got here if player shot collided with head or body segment
-	# if last segment remains hit then remove bug
-	# child count won't be 0 until next cycle
-	if get_child_count() <= 1:
-		segment.queue_free()
-		queue_free()
-	else:
-		# more than one segment remains
-		# sent to bug_spawner function _on_bug_hit
-		emit_signal("bug_hit", segment, self)
-		

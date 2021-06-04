@@ -8,7 +8,7 @@ var speed = 60
 
 var velocity = Vector2(0, -8)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	
 	if position.y > 0:
 		
@@ -34,8 +34,13 @@ func _physics_process(delta):
 
 func _on_Area2D_area_entered(area: Area2D) -> void:
 	set_block_signals(true)
-	print(area.name)
-	if area is BugBaseSegment:
-		#print('bug base')
+	if area is BugSegmentBase:
 		area.hit()
 	queue_free()
+
+
+
+func _on_Area2D_body_entered(body: Node) -> void:
+	if body is TileMap:
+		queue_free()
+		emit_signal("mushroom_hit", body.world_to_map(position))

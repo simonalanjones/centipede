@@ -15,12 +15,18 @@ _global_script_classes=[ {
 "path": "res://scripts/bug_base_segment.gd"
 }, {
 "base": "Area2D",
+"class": "BugSegmentBase",
+"language": "GDScript",
+"path": "res://scripts/bug_segment_base.gd"
+}, {
+"base": "Area2D",
 "class": "PlayerShot",
 "language": "GDScript",
 "path": "res://scripts/player_shot_k2d.gd"
 } ]
 _global_script_class_icons={
 "BugBaseSegment": "",
+"BugSegmentBase": "",
 "PlayerShot": ""
 }
 

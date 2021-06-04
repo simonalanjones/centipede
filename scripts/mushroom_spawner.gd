@@ -13,8 +13,8 @@ var rng = RandomNumberGenerator.new()
 func _ready() -> void:
 	
 	# clear any added for testing
-	#for n in get_node("mushroom_map").get_used_cells():
-	#	get_node("mushroom_map").set_cell(n.x,n.y, -1)
+	for n in get_node("mushroom_map").get_used_cells():
+		get_node("mushroom_map").set_cell(n.x,n.y, -1)
 		
 	rng.randomize()
 	
@@ -33,11 +33,15 @@ func check_map_location(global_position: Vector2) -> int:
 	var map_position = mushroom_map.world_to_map(local_position)
 	return mushroom_map.get_cellv(map_position)
 	
-
+	
+func spawn_mushroom_from_object(global_position: Vector2):
+	var local_position = mushroom_map.to_local(global_position)
+	spawn_mushroom(local_position)
+	
 # this has bug if fired for grid/screen position
 # need two functions:  spawn_mushroom_grid  spawn_mushroom_screen	
 func spawn_mushroom(mushroom_position: Vector2) -> void:
-	
+	return
 	# position from flea will be screen position not tilemap
 	if mushroom_position.x > 30 or mushroom_position.y > 30:
 		mushroom_position = mushroom_map.world_to_map(mushroom_position)
