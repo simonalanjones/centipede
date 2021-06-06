@@ -1,3 +1,5 @@
+class_name BugSegmentHead
+
 extends BugSegmentBase
 
 var check_map_function: Reference
@@ -6,18 +8,25 @@ var previous_vars: Array = []
 
 # this allows us to recall all the positional data at a previous position
 # when we hit the head we want to push it back to previous segment position
+
+## move this into base node so accessible to all
 func save_vars_to_array():
+	
 	previous_vars.push_front({
 		'position' : position,
+		'horizontal_direction' : horizontal_direction,
 		'vertical_direction' : vertical_direction,
-		'is_moving_vertically' : is_moving_vertically,
 		'is_moving_horizontally' : is_moving_horizontally,
-		'horizontal_direction' : horizontal_direction
+		'is_moving_vertically' : is_moving_vertically
 		})
+		
+	# keep the array trimmed by removing off the back
+	if previous_vars.size() > 32:
+		previous_vars.pop_back()
+		
 	
 	
-# remember to purge entries after certain size
-func get_data_at_position(position_required: Vector2):
+func get_data_at_position(position_required: Vector2) -> Dictionary:
 	for element in previous_vars:
 		if element.position == Vector2(position_required):
 			return element
@@ -52,9 +61,9 @@ func check_for_mushroom_collision() -> bool:
 func move():	
 	if can_move == true:# or Input.is_action_just_released("ui_end"):
 		set_direction_vars()
-		save_vars_to_array()
 		var velocity = get_move_vector() * speed
 		position += velocity
+		save_vars_to_array()
 	
 		
 
@@ -69,10 +78,6 @@ func get_move_vector() -> Vector2:
 		
 		
 func set_direction_vars():
-
-
-	## what direction vars to use after head set up not on boundary but yes - screen edge
-	## why does it move one pixel right
 	
 	if is_at_screen_edge():
 				
@@ -85,12 +90,12 @@ func set_direction_vars():
 			is_moving_vertically = true
 			is_moving_horizontally = false
 			
-			if position.x == 0:
-				horizontal_direction = Directions.RIGHT
-			elif position.x == 232:
-				horizontal_direction = Directions.LEFT
-			else:
-				print('error at screen edge - position:' + str(position))
+	#		if position.x == 0:
+	#			horizontal_direction = Directions.RIGHT
+	#		elif position.x == 232:
+	#			horizontal_direction = Directions.LEFT
+	##		else:
+	#			print('error at screen edge - position:' + str(position))
 			
 		else:
 			if is_on_grid_boundary():
@@ -116,7 +121,6 @@ func set_direction_vars():
 			is_moving_horizontally = false
 		
 		else:
-			#print('here changes')
 			if is_moving_vertically == true:
 				is_moving_vertically = false
 				is_moving_horizontally = true

@@ -1,3 +1,5 @@
+class_name BugSegmentBody
+
 extends BugSegmentBase
 
 
@@ -13,7 +15,7 @@ var start_position: Vector2
 func _ready() -> void:
 	start_position = position
 
-func move():	
+func move():
 	if can_move == true: #or Input.is_action_just_released("ui_accept"):
 		var velocity = get_move_vector() * speed
 		position += velocity
@@ -132,6 +134,17 @@ func set_direction_vars():
 	
 	else:
 		print('what?')
+		
+		print('position:' + str(position))
+		print('target position:' + str(target_position))
+		print("diff:" + str(diff))
+		print("is moving horizontally:" + str(is_moving_horizontally))
+		print("is moving vertically:" + str(is_moving_vertically))
+		print("horizontal dir:" + str(horizontal_direction))
+		print("vertical dir:" + str(vertical_direction))
+		print("has reached target:" + str(has_reached_target))
+		print('--------------------')
+		
 		has_reached_target = true
 
 

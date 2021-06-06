@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/dummy_body.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/dummy_head.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/dummy_scene.gd" type="Script" id=3]
+
+[node name="dummy_scene" type="Node"]
+script = ExtResource( 3 )
+
+[node name="dummy_head" parent="." instance=ExtResource( 2 )]
+position = Vector2( 124.874, 69.8733 )
+
+[node name="dummy_body" parent="." instance=ExtResource( 1 )]
+position = Vector2( 44.0566, 85.8683 )

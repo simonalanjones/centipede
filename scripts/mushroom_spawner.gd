@@ -23,7 +23,8 @@ func _ready() -> void:
 		var y = (rng.randi() % 30)
 		spawn_mushroom(Vector2(x,y))
 
-
+	
+	
 func mushrooms_in_infield() -> int:
 	return infield_array.size()
 		
@@ -38,8 +39,7 @@ func spawn_mushroom_from_object(global_position: Vector2):
 	var local_position = mushroom_map.to_local(global_position)
 	spawn_mushroom(local_position)
 	
-# this has bug if fired for grid/screen position
-# need two functions:  spawn_mushroom_grid  spawn_mushroom_screen	
+
 func spawn_mushroom(mushroom_position: Vector2) -> void:
 	#return
 	# position from flea will be screen position not tilemap
