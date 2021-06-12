@@ -1,4 +1,5 @@
 extends Node2D
+signal mushroom_spawned
 
 onready var flea_scene: PackedScene = preload("res://scenes/flea.tscn")
 
@@ -6,7 +7,7 @@ var rng = RandomNumberGenerator.new()
 var flea_in_motion:bool = false
 var get_score: Reference
 var infield_mushroom_count: Reference
-var mushroom_spawn: Reference
+
 
 func _ready() -> void:
 	rng.randomize()
@@ -35,7 +36,7 @@ func _on_Timer_timeout() -> void:
 		
 		
 func _on_flea_spawned_mushroom(mushroom_position: Vector2) -> void:
-	mushroom_spawn.call_func(mushroom_position)
+	emit_signal("mushroom_spawned", mushroom_position)
 		
 		
 func _on_flea_exit_screen() -> void:

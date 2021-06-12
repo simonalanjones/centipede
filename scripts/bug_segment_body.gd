@@ -17,7 +17,7 @@ func _ready() -> void:
 
 func move():
 	if can_move == true: #or Input.is_action_just_released("ui_accept"):
-		var velocity = get_move_vector() * speed
+		var velocity = get_move_vector() * get_speed()
 		position += velocity
 		
 
@@ -134,7 +134,7 @@ func set_direction_vars():
 	
 	else:
 		print('what?')
-		
+		print('index in bug:' + str(get_index()))
 		print('position:' + str(position))
 		print('target position:' + str(target_position))
 		print("diff:" + str(diff))
@@ -181,13 +181,20 @@ func set_target_position(new_position: Vector2) -> void:
 	
 
 
-func __on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+func _on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			print("body clicked (" + str(get_index()) + ")")
+			print('current pos: ' + str(position))
+			print('target pos: ' + str(target_position))
 			print("is_moving_vertically: " + str(is_moving_vertically))
 			print("is_moving_horizontally: " + str(is_moving_horizontally))
 			print("horizontal_direction: " + str(horizontal_direction))
 			print("vertical_direction: " + str(vertical_direction))
+			var diff:Vector2 = target_position - position
+			print('diff between target and current:' + str(diff))
+	
+			
 			print("-------------------")
+
 

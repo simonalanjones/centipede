@@ -13,8 +13,8 @@ var rng = RandomNumberGenerator.new()
 func _ready() -> void:
 	
 	# clear any added for testing
-	for n in get_node("mushroom_map").get_used_cells():
-		get_node("mushroom_map").set_cell(n.x,n.y, -1)
+	#for n in get_node("mushroom_map").get_used_cells():
+	#	get_node("mushroom_map").set_cell(n.x,n.y, -1)
 		
 	rng.randomize()
 	
@@ -35,17 +35,11 @@ func check_map_location(global_position: Vector2) -> int:
 	return mushroom_map.get_cellv(map_position)
 	
 	
-func spawn_mushroom_from_object(global_position: Vector2):
-	var local_position = mushroom_map.to_local(global_position)
-	spawn_mushroom(local_position)
+func spawn_mushroom_from_world_position(world_position: Vector2):
+	spawn_mushroom(mushroom_map.world_to_map(world_position))
 	
 
 func spawn_mushroom(mushroom_position: Vector2) -> void:
-	#return
-	# position from flea will be screen position not tilemap
-	if mushroom_position.x > 30 or mushroom_position.y > 30:
-		mushroom_position = mushroom_map.world_to_map(mushroom_position)
-		
 	mushroom_map.set_cell(mushroom_position.x,mushroom_position.y,0)
 	# need to track the mushrooms that are spawned within infield group
 	if mushroom_position.y >= 25 and not infield_array.has(Vector2(mushroom_position)):
@@ -67,15 +61,3 @@ func _on_mushroom_hit(mushroom_position: Vector2) -> void:
 			# and add 1 point to score
 	else:
 		mushroom_map.set_cell(mushroom_position.x,mushroom_position.y,cell_value+1) 
-
-
-func _on_bug_segment_hit(segment, bug) -> void:
-	
-	var map_position:Vector2
-	
-	if bug.get_head().is_moving_left():
-		map_position = mushroom_map.world_to_map(segment.position - Vector2(8,0))
-	else:
-		map_position = mushroom_map.world_to_map(segment.position + Vector2(8,0))
-	spawn_mushroom(map_position)
-

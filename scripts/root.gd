@@ -27,10 +27,12 @@ func _ready():
 	randomize()
 	var mushroom_spawner = get_node("/root/root/mushroom_spawner")
 	var bug_spawner = get_node("/root/root/bug_spawner")
+	var flea_spawner = get_node("/root/root/flea_spawner")
 
 	var _a = get_tree().connect("screen_resized", self, "_screen_resized")
 	var _b = bug_spawner.connect("wave_complete", self, "_on_wave_complete")
-	var _c = bug_spawner.connect("segment_hit", mushroom_spawner, "spawn_mushroom_from_object")
+	var _c = bug_spawner.connect("segment_hit", mushroom_spawner, "spawn_mushroom_from_world_position")
+	var _d = flea_spawner.connect("mushroom_spawned",  mushroom_spawner, "spawn_mushroom_from_world_position")
 	_screen_resized()
 	
 
@@ -39,15 +41,16 @@ func _ready():
 	
 		
 	#var bug_spawner = get_node("/root/root/bug_spawner")
-	var flea_spawner = get_node("/root/root/flea_spawner")
+	
 	#var mushroom_spawner = get_node("/root/root/mushroom_spawner")
 	var score_board = get_node("/root/root/ui/score")
 	#var bug_spawner = get_node("/root/root/bug_spawner")
 	
 	flea_spawner.get_score = funcref(score_board, "get_score")
-	flea_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
+	
+	#flea_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
 	flea_spawner.infield_mushroom_count = funcref(mushroom_spawner, "mushrooms_in_infield")
-	#bug_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
+	bug_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
 	
 	
 
@@ -63,3 +66,6 @@ func _ready():
 func _on_wave_complete():
 	pass
 	
+
+
+

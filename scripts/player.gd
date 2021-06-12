@@ -6,6 +6,8 @@ const CLASS_NAME = "Player"
 onready var player_shot_scene: PackedScene = preload("res://scenes/player_shot_k2d.tscn")
 onready var mushroom_spawner = get_node("/root/root/mushroom_spawner")
 
+var collided:bool = false
+
 func _ready() -> void:
 	#global_position.x = 32
 	#global_position.y = 232
@@ -22,6 +24,7 @@ func _process(_delta: float) -> void:
 	var direction = Vector2.ZERO
 	
 	if Input.is_action_pressed("ui_up"):
+		#if not $RayCastUp.is_colliding():
 		#if global_position.y > 192:
 		direction.y -= 2
 		
@@ -30,10 +33,12 @@ func _process(_delta: float) -> void:
 			direction.y += 2
 		
 	if Input.is_action_pressed("ui_left"):
+		#if not $RayCastLeft.is_colliding():
 		if global_position.x > 0:
 			direction.x -= 2
 		
 	if Input.is_action_pressed("ui_right"):
+		#if not $RayCastRight.is_colliding():
 		if global_position.x < 233:
 			direction.x += 2
 
@@ -65,3 +70,14 @@ func _process(_delta: float) -> void:
 func _on_Player_area_entered(_area: Area2D) -> void:
 	pass
 	#print(area.name)
+
+
+func _on_Player_body_entered(_body: Node) -> void:
+	pass
+	#collided = true
+	#print(body.name)
+
+
+func _on_Player_body_exited(_body: Node) -> void:
+	#collided = false
+	pass # Replace with function body.

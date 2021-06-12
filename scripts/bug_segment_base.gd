@@ -15,7 +15,6 @@ var movement_vectors: Array = [
 	Vector2.RIGHT
 ]
 
-var speed: int = 1 setget set_speed, get_speed
 
 var horizontal_direction: int
 var vertical_direction: int
@@ -39,6 +38,10 @@ func _ready() -> void:
 	#set_ortientation()
 
 
+func get_speed():
+	return get_parent().get_speed()
+	
+	
 func set_horizontal_direction(set_direction:int) -> void:
 	if set_direction in [ Directions.LEFT, Directions.RIGHT ]:
 		horizontal_direction = set_direction
@@ -71,7 +74,15 @@ func is_moving_down() -> bool:
 
 func is_on_grid_boundary() -> bool:
 	return int(position.x) % 8 == 0 and int(position.y) % 8 == 0
+
+
+func is_on_vertical_boundary() -> bool:
+	return int(position.y) % 8 == 0
 	
+
+func is_on_horizontal_boundary() -> bool:
+	return int(position.x) % 8 == 0	
+
 
 func is_at_screen_edge() -> bool:
 	return position.x >= 232 or position.x <= 0
@@ -84,18 +95,14 @@ func is_on_bottom_line() -> bool:
 func is_within_outfield() -> bool:
 	return position.y <= 152
 	
-		
+
+func is_off_screen() -> bool:
+	return position.x > 232 or position.x < 0
+	
+			
 func get_class() -> String:
 	return CLASS_NAME
 	
 	
-func set_speed(speed_value: int) -> void:
-	speed = speed_value
-
-		
-func get_speed() -> int:
-	return speed
-
-
 func hit():
 	emit_signal("segment_hit", self)

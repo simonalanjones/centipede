@@ -39,7 +39,7 @@ extents = Vector2( 3.74431, 3.92962 )
 size = 8
 font_data = ExtResource( 18 )
 
-[node name="Area2D" type="Area2D"]
+[node name="Area2DHead" type="Area2D"]
 z_index = 1
 collision_layer = 128
 collision_mask = 0
@@ -76,6 +76,7 @@ enabled = true
 cast_to = Vector2( -4, 0 )
 collision_mask = 128
 collide_with_areas = true
+collide_with_bodies = false
 
 [node name="RayCastRight" type="RayCast2D" parent="."]
 process_priority = -1
@@ -84,6 +85,7 @@ enabled = true
 cast_to = Vector2( 4, 0 )
 collision_mask = 128
 collide_with_areas = true
+collide_with_bodies = false
 
 [node name="Label" type="Label" parent="."]
 visible = false
@@ -95,3 +97,5 @@ text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="input_event" from="." to="." method="_on_Area2D_input_event"]
