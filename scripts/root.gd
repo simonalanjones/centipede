@@ -23,49 +23,54 @@ func _screen_resized():
 
 
 func _ready():
-	
 	randomize()
-	var mushroom_spawner = get_node("/root/root/mushroom_spawner")
-	var bug_spawner = get_node("/root/root/bug_spawner")
-	var flea_spawner = get_node("/root/root/flea_spawner")
-
-	var _a = get_tree().connect("screen_resized", self, "_screen_resized")
-	var _b = bug_spawner.connect("wave_complete", self, "_on_wave_complete")
-	var _c = bug_spawner.connect("segment_hit", mushroom_spawner, "spawn_mushroom_from_world_position")
-	var _d = flea_spawner.connect("mushroom_spawned",  mushroom_spawner, "spawn_mushroom_from_world_position")
-	_screen_resized()
+	var bug_spawner = get_node("bug_spawner")
+	var flea_spawner = get_node("flea_spawner")
+	var explosion_spawner = get_node("explosion_spawner")
+	var mushroom_map = get_node("mushroom_map")
+	var scorpion_spawner = get_node("scorpion_spawner")
+	#var score_board = get_node("ui/score")
+	var game_manager = get_node("game_manager")
+	var player = get_node("player")
 	
-
 	
-
+	player.register_mushroom_hit = funcref(mushroom_map, "_on_mushroom_hit")
 	
-		
-	#var bug_spawner = get_node("/root/root/bug_spawner")
-	
-	#var mushroom_spawner = get_node("/root/root/mushroom_spawner")
-	var score_board = get_node("/root/root/ui/score")
-	#var bug_spawner = get_node("/root/root/bug_spawner")
-	
-	flea_spawner.get_score = funcref(score_board, "get_score")
+	game_manager.spawn_flea = funcref(flea_spawner, "spawn")
+	game_manager.spawn_new_wave = funcref(bug_spawner, "spawn_wave")
+	#game_manager.get_score = funcref(score_board, "get_score")
+	#game_manager.add_points = funcref(score_board, "add_points")
+	#game_manager.count_infield_mushrooms = funcref(mushroom_map, "count_infield_mushrooms")
+	game_manager.spawn_scorpion = funcref(scorpion_spawner, "spawn")
+	#game_manager.check_map_location = funcref(mushroom_map, "check_map_location")
+	#game_manager.poison_mushroom =  funcref(mushroom_map, "poison_mushroom")
+	#game_manager.eat_mushroom =  funcref(mushroom_map, "eat_mushroom")
+	#game_manager.spawn_mushroom = funcref(mushroom_map, "spawn_at_world_position")
+	game_manager.spawn_explosion = funcref(explosion_spawner, "spawn")
+	#flea_spawner.get_score = funcref(score_board, "get_score")
+	#scorpion_spawner.get_score = funcref(score_board, "get_score")
+	#scorpion_spawner.attack_wave = funcref(bug_spawner, "attack_wave_counter")
 	
 	#flea_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
-	flea_spawner.infield_mushroom_count = funcref(mushroom_spawner, "mushrooms_in_infield")
-	bug_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
+	#flea_spawner.infield_mushroom_count = funcref(mushroom_spawner, "mushrooms_in_infield")
 	
 	
-
+	bug_spawner.mushroom_spawn = funcref(mushroom_map, "spawn_mushroom")
+	bug_spawner.check_mushroom = funcref(mushroom_map, "check_map_location")
+	
+	var _c = bug_spawner.connect("segment_hit", game_manager, "segment_hit")
+	var _i = bug_spawner.connect("wave_complete", game_manager, "_on_wave_complete")
+	
+	var _f = flea_spawner.connect("mushroom_spawned",  mushroom_map, "spawn_at_world_position")
+	var _j = flea_spawner.connect("flea_left_screen", game_manager, "on_flea_left_screen")
+	var _l = flea_spawner.connect("flea_destroyed", game_manager, "flea_destroyed")
+	
+	var _g = mushroom_map.connect("points_awarded",  game_manager, "on_points_awarded")
 	
 	
+	var _k = scorpion_spawner.connect("scorpion_left_screen", game_manager, "on_scorpion_left_screen")
+	var _h = scorpion_spawner.connect("scorpion_destroyed",  game_manager, "on_scorpion_destroyed")
+		
+	var _a = get_tree().connect("screen_resized", self, "_screen_resized")
+	_screen_resized()
 	
-	#mushroom_spawner.check_mushroom_grid = funcref(grid, "check_grid")
-	#mushroom_spawner.remove_from_mushroom_grid = funcref(grid, "remove_from_grid")
-	#mushroom_spawner.add_to_mushroom_grid = funcref(grid, "add_to_grid")
-	#mushroom_spawner.debug_grid = funcref(grid, "debug_grid")
-	#yield(get_tree(), "idle_frame")
-	
-func _on_wave_complete():
-	pass
-	
-
-
-

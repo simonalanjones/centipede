@@ -6,28 +6,21 @@ signal bug_hit(segment, area)
 
 var is_side_feed:bool = false
 var speed_factor:int = 1 setget set_speed, get_speed
-#var can_move = true
 
 
 func _ready():
 	set_body_target_positions()
 	if is_side_feed == true:
 		get_head().is_side_feed = true
-	#stop_bug()
 
 
-func _process(_delta: float) -> void:
+func _process(_delta: float) -> void:	
 	get_head().move()
-	
 	for n in range(1, get_child_count()):
 		get_child(n).move()
-	
 	if get_head().is_on_grid_boundary():
-		set_body_target_positions()
-	
-	#if has_moved_all_body_segments_to_target():
-	#	set_body_target_positions()
-	
+			set_body_target_positions()
+			
 
 func has_moved_all_body_segments_to_target() -> bool:
 	var all_moved_state = true	
@@ -64,26 +57,6 @@ func set_speed(speed: int) -> void:
 func get_speed() -> int:
 	return speed_factor
 	
-	
-func stop_bug():
-	for n in get_children():
-		n.can_move = false
-			
-
-func start_bug():
-	for n in get_children():
-		n.can_move = true
-	
-	
-func _physics_process(_delta: float) -> void:
-	if Input.is_action_pressed("ui_cancel"):
-		for n in get_children():
-			n.can_move = true
-	
-	if Input.is_action_pressed("ui_focus_next"):
-		for n in get_children():
-			n.can_move = false
-				
 	
 func _on_segment_hit(segment:Node):
 	# wait until all segments moved

@@ -33,7 +33,6 @@ onready var sprite: AnimatedSprite = get_node("Sprite")
 
 
 func _ready() -> void:
-	pass
 	get_node("Label").set_text(str(get_index()))
 	#set_ortientation()
 
@@ -103,6 +102,21 @@ func is_off_screen() -> bool:
 func get_class() -> String:
 	return CLASS_NAME
 	
-	
-func hit():
+
+func mushroom_spawn_position() -> Vector2:
+	var mushroom_position: Vector2 = position # default mushroom position
+	if is_moving_horizontally == true:
+		if is_moving_left():
+			mushroom_position = position + Vector2(-8,0)
+		else:
+			mushroom_position = position + Vector2(8,0)
+	if mushroom_position.x < 0:
+		mushroom_position.x = 0	
+		
+	if mushroom_position.x > 232:
+		mushroom_position.x = 232
+	return mushroom_position
+		
+			
+func hit() -> void:
 	emit_signal("segment_hit", self)

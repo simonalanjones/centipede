@@ -47,6 +47,7 @@ script = ExtResource( 17 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
+frame = 6
 playing = true
 centered = false
 
@@ -54,27 +55,11 @@ centered = false
 position = Vector2( 3.46935, 3.99386 )
 shape = SubResource( 2 )
 
-[node name="RayCastUp" type="RayCast2D" parent="."]
-process_priority = -1
-position = Vector2( 3.72845, 1.92479 )
-enabled = true
-cast_to = Vector2( 0, -4 )
-collision_mask = 384
-collide_with_areas = true
-
-[node name="RayCastDown" type="RayCast2D" parent="."]
-process_priority = -1
-position = Vector2( 4.04343, 6.492 )
-enabled = true
-cast_to = Vector2( 0, 4 )
-collision_mask = 384
-collide_with_areas = true
-
 [node name="RayCastLeft" type="RayCast2D" parent="."]
 position = Vector2( 0.0488958, 3.77728 )
 enabled = true
 cast_to = Vector2( -4, 0 )
-collision_mask = 128
+collision_mask = 384
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -83,7 +68,7 @@ process_priority = -1
 position = Vector2( 7.03575, 3.97216 )
 enabled = true
 cast_to = Vector2( 4, 0 )
-collision_mask = 128
+collision_mask = 384
 collide_with_areas = true
 collide_with_bodies = false
 
@@ -97,5 +82,3 @@ text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[connection signal="input_event" from="." to="." method="_on_Area2D_input_event"]
