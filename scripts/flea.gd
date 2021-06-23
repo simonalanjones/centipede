@@ -4,7 +4,6 @@ extends Area2D
 
 signal flea_left_screen
 signal flea_destroyed(points_awarded)
-signal spawned_mushroom(position)
 
 const CLASS_NAME = "Flea"
 
@@ -21,7 +20,7 @@ func _process(_delta: float) -> void:
 	if position.y < 256:
 		position.y += 2 * speed_factor
 		if randf() < 0.1 and position.y < 248:
-			emit_signal('spawned_mushroom', position)
+			Globals.spawn_tilemap_mushroom(position)
 	else:
 		emit_signal('flea_left_screen')
 		queue_free()

@@ -14,7 +14,7 @@ func _ready() -> void:
 	Rng.randomize()		
 
 
-func on_scorpion_exit_screen():
+func on_scorpion_left_screen():
 	emit_signal("scorpion_left_screen")
 
 
@@ -31,7 +31,7 @@ func spawn():
 	else:
 		scorpion.position = Vector2(232, r * 8)
 	
-	scorpion.connect('scorpion_left_screen', self, 'on_scorpion_exit_screen')
+	scorpion.connect('scorpion_left_screen', self, 'on_scorpion_left_screen')
 	scorpion.connect('scorpion_destroyed', self, 'on_scorpion_destroyed')
 	scorpion.speed_factor = 1 if Globals.player_score() < SCORE_THRESHOLD else 2
 	add_child(scorpion)

@@ -2,8 +2,6 @@ class_name PlayerShot
 
 extends Area2D
 
-signal mushroom_hit
-
 var speed = 60
 var velocity = Vector2(0, -8)
 
@@ -23,5 +21,5 @@ func _on_Area2D_area_entered(area: Area2D) -> void:
 
 func _on_Area2D_body_entered(body: Node) -> void:
 	if body is TileMap:
+		Globals.register_tilemap_collision(body.world_to_map(position))
 		queue_free()
-		emit_signal("mushroom_hit", body.world_to_map(position))

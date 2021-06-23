@@ -10,7 +10,6 @@ enum Directions { UP, DOWN, LEFT, RIGHT }
 enum Speed { SLOW = 1, FAST = 2 }
 
 var main_bug_start_position:Vector2 = Vector2(120, 8)
-var mushroom_spawn: Reference
 var side_feed_triggered: bool = false
 var cycles_per_side_feed_spawn: int = 180
 var cycle_count:int = 0

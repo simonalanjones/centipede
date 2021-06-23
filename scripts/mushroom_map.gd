@@ -68,10 +68,6 @@ func poison_mushroom(world_position: Vector2) -> void:
 	set_cellv(local_position, TILEMAP_NEW_POISONED_CELL)
 	
 
-func eat_mushroom(mushroom_position: Vector2) -> void:
-	clear_cell(mushroom_position)
-
-
 func clear_cell(mushroom_position: Vector2):
 	set_cellv(mushroom_position, TILEMAP_EMPTY_CELL)
 	var index = infield_array.find(Vector2(mushroom_position.x, mushroom_position.y))
@@ -79,15 +75,15 @@ func clear_cell(mushroom_position: Vector2):
 		infield_array.remove(index)
 				
 			
-func _on_mushroom_hit(mushroom_position: Vector2) -> void:
-	match get_cellv(mushroom_position):
+func register_tilemap_collision(tilemap_position: Vector2) -> void:
+	match get_cellv(tilemap_position):
 		TILEMAP_LAST_MUSHROOM_CELL:
 			emit_signal("points_awarded", MUSHROOM_POINTS)
-			clear_cell(mushroom_position)
+			clear_cell(tilemap_position)
 		TILEMAP_LAST_POISONED_CELL:
 			emit_signal("points_awarded", POISONED_POINTS)
-			clear_cell(mushroom_position)
+			clear_cell(tilemap_position)
 		# if anyting else just increment it
 		_:
-			set_cellv(mushroom_position, get_cellv(mushroom_position) + 1) 
+			set_cellv(tilemap_position, get_cellv(tilemap_position) + 1) 
 

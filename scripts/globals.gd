@@ -23,5 +23,9 @@ func tilemap_cell_value(world_position: Vector2) -> int:
 	return mushroom_map_node.check_map_location(world_position)
 
 
+func register_tilemap_collision(grid_position: Vector2) -> void:
+	mushroom_map_node.register_tilemap_collision(grid_position)
+	
+
 func poison_tilemap_cell(world_position) -> void:
 	mushroom_map_node.poison_mushroom(world_position)

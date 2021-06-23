@@ -29,46 +29,27 @@ func _ready():
 	var explosion_spawner = get_node("explosion_spawner")
 	var mushroom_map = get_node("mushroom_map")
 	var scorpion_spawner = get_node("scorpion_spawner")
-	#var score_board = get_node("ui/score")
+	var spider_spawner = get_node("spider_spawner")
 	var game_manager = get_node("game_manager")
-	var player = get_node("player")
-	
-	
-	player.register_mushroom_hit = funcref(mushroom_map, "_on_mushroom_hit")
-	
+		
 	game_manager.spawn_flea = funcref(flea_spawner, "spawn")
 	game_manager.spawn_new_wave = funcref(bug_spawner, "spawn_wave")
-	#game_manager.get_score = funcref(score_board, "get_score")
-	#game_manager.add_points = funcref(score_board, "add_points")
-	#game_manager.count_infield_mushrooms = funcref(mushroom_map, "count_infield_mushrooms")
 	game_manager.spawn_scorpion = funcref(scorpion_spawner, "spawn")
-	#game_manager.check_map_location = funcref(mushroom_map, "check_map_location")
-	#game_manager.poison_mushroom =  funcref(mushroom_map, "poison_mushroom")
-	#game_manager.eat_mushroom =  funcref(mushroom_map, "eat_mushroom")
-	#game_manager.spawn_mushroom = funcref(mushroom_map, "spawn_at_world_position")
 	game_manager.spawn_explosion = funcref(explosion_spawner, "spawn")
-	#flea_spawner.get_score = funcref(score_board, "get_score")
-	#scorpion_spawner.get_score = funcref(score_board, "get_score")
-	#scorpion_spawner.attack_wave = funcref(bug_spawner, "attack_wave_counter")
-	
-	#flea_spawner.mushroom_spawn = funcref(mushroom_spawner, "spawn_mushroom")
-	#flea_spawner.infield_mushroom_count = funcref(mushroom_spawner, "mushrooms_in_infield")
-	
-	
-	bug_spawner.mushroom_spawn = funcref(mushroom_map, "spawn_mushroom")
-	bug_spawner.check_mushroom = funcref(mushroom_map, "check_map_location")
+	game_manager.spawn_spider = funcref(spider_spawner, "spawn")
 	
 	var _c = bug_spawner.connect("segment_hit", game_manager, "segment_hit")
 	var _i = bug_spawner.connect("wave_complete", game_manager, "_on_wave_complete")
 	
-	var _f = flea_spawner.connect("mushroom_spawned",  mushroom_map, "spawn_at_world_position")
 	var _j = flea_spawner.connect("flea_left_screen", game_manager, "on_flea_left_screen")
 	var _l = flea_spawner.connect("flea_destroyed", game_manager, "flea_destroyed")
+	var _m = spider_spawner.connect("spider_destroyed", game_manager, "on_spider_destroyed")
 	
-	var _g = mushroom_map.connect("points_awarded",  game_manager, "on_points_awarded")
+	var _g = mushroom_map.connect("points_awarded",  game_manager, "award_points")
 	
 	
 	var _k = scorpion_spawner.connect("scorpion_left_screen", game_manager, "on_scorpion_left_screen")
+	var _b = spider_spawner.connect("spider_left_screen", game_manager, "on_spider_left_screen")
 	var _h = scorpion_spawner.connect("scorpion_destroyed",  game_manager, "on_scorpion_destroyed")
 		
 	var _a = get_tree().connect("screen_resized", self, "_screen_resized")

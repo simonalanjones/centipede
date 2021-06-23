@@ -14,15 +14,10 @@ func _ready() -> void:
 func spawn():
 	var flea = flea_scene.instance()
 	flea.position = Vector2((Rng.randi() % 29 ) * 8, 16)
-	flea.connect("spawned_mushroom", self, "on_flea_spawned_mushroom")
+	
 	flea.connect('flea_left_screen', self, 'on_flea_left_screen')
 	flea.connect('flea_destroyed', self, 'on_flea_destroyed')
 	add_child(flea)
-
-		
-
-func on_flea_spawned_mushroom(mushroom_position: Vector2) -> void:
-	emit_signal("mushroom_spawned", mushroom_position)
 		
 		
 func on_flea_left_screen() -> void:

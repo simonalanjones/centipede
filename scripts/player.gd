@@ -59,19 +59,12 @@ func _process(_delta: float) -> void:
 		# NEEDS TO BE ALIGNED TO GRID WHEN LAUNCHING AS IT MOVES 8 PIXELS PER CYCLE
 		if ok_to_shoot == true:
 			var player_shot = player_shot_scene.instance()
-			player_shot.connect("mushroom_hit", self, "_on_mushroom_hit")
 			player_shot.name = "PlayerShot"
 			player_shot.position.y = position.y
 			player_shot.position = player_shot.position.snapped(Vector2.ONE * 8)
 			player_shot.position.x = position.x + 3
 			get_node("../").add_child(player_shot)
 
-
-
-func _on_mushroom_hit(map_position: Vector2):
-	register_mushroom_hit.call_func(map_position)
-	
-	
 
 func _on_Player_area_entered(_area: Area2D) -> void:
 	pass

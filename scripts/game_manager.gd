@@ -4,22 +4,18 @@ extends Node
 var spawn_new_wave: Reference
 var spawn_flea: Reference
 var spawn_scorpion: Reference
-#var eat_mushroom: Reference
-#var spawn_mushroom: Reference
 var spawn_explosion: Reference
+var spawn_spider: Reference
 
 var attack_wave:int = 1
 var scorpion_in_motion:bool = false
 var flea_in_motion:bool = false
+var spider_in_motion:bool = false
 
 
 func _ready() -> void:
 	yield(get_tree(), "idle_frame")
 	spawn_new_wave.call_func(attack_wave)
-
-
-func on_points_awarded(points):
-	Globals.add_score_points(points)
 
 
 # centralise score management - extra life etc	
@@ -30,7 +26,6 @@ func award_points(points) -> void:
 func segment_hit(segment: BugSegmentBase) -> void:
 	award_points(segment.points_awarded)
 	Globals.spawn_tilemap_mushroom(segment.mushroom_spawn_position())
-	#spawn_mushroom.call_func(segment.mushroom_spawn_position())
 	spawn_explosion.call_func(segment.position)
 
 
@@ -56,7 +51,17 @@ func flea_destroyed(flea: Flea) -> void:
 func on_flea_left_screen():
 	flea_in_motion = false
 	
+	
+func on_spider_left_screen() -> void:
+	spider_in_motion = false
+	# reset spider timer
+	# change spawn time to 2 seconds not 4 (after shot)
 
+func on_spider_destroyed() -> void:
+	spider_in_motion = false
+	# reset spider timer
+	# change spawn time to 4 seconds not 2
+	
 func _on_scorpion_timer_timeout() -> void:
 	if flea_in_motion == false and scorpion_in_motion == false:
 		spawn_scorpion.call_func()
@@ -71,3 +76,9 @@ func on_scorpion_destroyed(scorpion: Scorpion) -> void:
 	
 func on_scorpion_left_screen():
 	scorpion_in_motion = false
+
+
+func _on_spider_timer_timeout() -> void:
+	if spider_in_motion == false:
+		spider_in_motion = true
+		spawn_spider.call_func()
