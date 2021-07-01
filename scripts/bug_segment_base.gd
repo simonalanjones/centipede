@@ -93,7 +93,11 @@ func is_on_bottom_line() -> bool:
 
 func is_within_outfield() -> bool:
 	return position.y <= 152
-	
+
+
+func is_at_top_of_retreat() -> bool:
+	return position.y <= 184
+
 
 func is_off_screen() -> bool:
 	return position.x > 232 or position.x < 0

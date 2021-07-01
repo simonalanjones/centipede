@@ -27,7 +27,7 @@ func _process(_delta: float) -> void:
 
 
 func _on_Flea_area_entered(area: Area2D) -> void:
-	print(area.name)
+	#print(area.name)
 	
 	if area.name == "PlayerShot":
 		hits_taken += 1

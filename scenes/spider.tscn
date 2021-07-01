@@ -21,7 +21,9 @@ animations = [ {
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 7.52124, 3.96116 )
 
-[node name="Area2D" type="Area2D"]
+[node name="Spider" type="Area2D"]
+collision_layer = 32
+collision_mask = 396
 script = ExtResource( 9 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -32,8 +34,25 @@ playing = true
 centered = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2( 7.54188, 4.03363 )
 shape = SubResource( 2 )
+
+[node name="RayCastDown" type="RayCast2D" parent="."]
+position = Vector2( 8.05341, 5.15043 )
+enabled = true
+cast_to = Vector2( 0, 5 )
+collision_mask = 384
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCastUp" type="RayCast2D" parent="."]
+position = Vector2( 7.95975, 3.18391 )
+enabled = true
+cast_to = Vector2( 0, -5 )
+collision_mask = 384
+collide_with_areas = true
+collide_with_bodies = false
 
 [connection signal="area_entered" from="." to="." method="_on_Area2D_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_Area2D_body_entered"]

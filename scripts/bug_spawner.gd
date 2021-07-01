@@ -39,6 +39,7 @@ func create_screen_positions(amount: int, build_direction: int, screen_start: Ve
 
 	
 func spawn_wave(attack_wave):
+	#print('starting new wave')
 	#print(attack_wave)
 	# number of body segments, build direction
 	var start_positions:Array = create_screen_positions(13 - attack_wave, Directions.UP, main_bug_start_position)
@@ -84,6 +85,8 @@ func create_bug_from_positions(positions: Array, horizontal_direction: int, vert
 			bug_segment.set_horizontal_direction(horizontal_direction)
 			bug_segment.is_moving_horizontally = true
 			bug_segment.connect('side_feed_triggered', self, '_on_side_feed_triggered')
+			bug_segment.connect('set_poisoned', bug, '_on_head_poisoned')
+			bug_segment.connect('unset_poisoned', bug, '_on_head_clear_poisoned')
 		else:
 			bug_segment = bug_body_scene.instance()
 		
@@ -101,17 +104,21 @@ func create_bug_from_positions(positions: Array, horizontal_direction: int, vert
 
 func _on_bug_hit(segment: BugSegmentBase, bug: Bug) -> void:
 	bug.set_block_signals(true)
-	emit_signal("segment_hit", segment)
+	bug.set_lock_state(true)
+	
+	# spawn exploding animation, add points, add mushroom in place
+	emit_signal("segment_hit", segment) # connected to game manager
 
 	if bug.get_child_count() == 1:  # head only remaining
 		bug.queue_free()
 	else:
 		if segment is BugSegmentHead:
-			handle_head_segment_hit(segment, bug)			
+			handle_head_segment_hit(segment, bug)
 		else:
 			handle_body_segment_hit(segment, bug)
 			
 	bug.set_block_signals(false)	
+	bug.set_lock_state(false)
 
 
 func handle_body_segment_hit(body_segment:BugSegmentBody, bug:Bug) -> void:
@@ -136,6 +143,12 @@ func handle_body_segment_hit(body_segment:BugSegmentBody, bug:Bug) -> void:
 					new_head_segment.vertical_direction = bug_segment.vertical_direction
 					new_head_segment.is_moving_horizontally = bug_segment.is_moving_horizontally
 					new_head_segment.is_moving_vertically = bug_segment.is_moving_vertically
+					
+					
+					# warning-ignore:return_value_discarded
+					new_head_segment.connect('set_poisoned', new_bug, '_on_head_poisoned')
+					# warning-ignore:return_value_discarded
+					new_head_segment.connect('unset_poisoned', new_bug, '_on_head_clear_poisoned')
 					# warning-ignore:return_value_discarded
 					new_head_segment.connect('segment_hit', new_bug, '_on_segment_hit')
 					# warning-ignore:return_value_discarded
@@ -166,27 +179,31 @@ func handle_head_segment_hit(head_segment:BugSegmentHead, bug:Bug) -> void:
 		var first_body_segment:BugSegmentBody = bug.get_child(1)
 		# move the head into the position of the first body segment
 		head_segment.position = first_body_segment.position
-		
+			
 		if head_segment.is_on_vertical_boundary():
 			head_segment.is_moving_vertically = false
 			head_segment.is_moving_horizontally = true
 		else:
 			head_segment.is_moving_vertically = true
 			head_segment.is_moving_horizontally = false
-			
-		if head_segment.is_poisoned == true:
-			head_segment.is_poisoned = false
-			
-			
+
+		"""		
 		head_segment.vertical_direction = first_body_segment.vertical_direction
+		
 		head_segment.horizontal_direction = first_body_segment.horizontal_direction
 		# segment in loop cannot be set to move vertically if not on boundary
 		if head_segment.is_on_grid_boundary() == true:
 			head_segment.is_moving_vertically = first_body_segment.is_moving_vertically
 		head_segment.is_moving_horizontally = first_body_segment.is_moving_horizontally
+		"""
+		head_segment.is_poisoned = false
 	
 		# remove the original first segment now taken by head	
-		first_body_segment.queue_free()
+		#first_body_segment.queue_free()
+		#first_body_segment.trapped = 1
+		first_body_segment.free()
+		
+		bug.set_body_target_positions(false)
 		
 		
 func _on_side_feed_triggered() -> void:
@@ -199,19 +216,23 @@ func stop_side_feed() -> void:
 
 
 func _process(_delta: float) -> void:
-										
+	
+	for bug in get_tree().get_nodes_in_group("bugs"):
+		bug.move()
+		
+		
 	if side_feed_triggered == true:
-		cycle_count +=1
+		cycle_count += 1
 		if cycle_count >= cycles_per_side_feed_spawn:
 			cycle_count = 0
 			spawn_side_feed()
 			# reduce cycles_per_side_feed_spawn by 7
 			
 			
-	for _bug in get_tree().get_nodes_in_group("bugs"):			
+	for _bug in get_tree().get_nodes_in_group("bugs"):
 		if _bug.get_head().position.x > 260:
 			print('bug gone off right edge')
-		if _bug.get_head().position.x < -16:
+		if _bug.get_head().position.x < -32:
 			print('bug gone off the left edge')	
 			
 
@@ -234,7 +255,4 @@ func spawn_side_feed() -> void:
 		call_deferred("add_child", bug)
 		
 
-func _on_Timer_timeout() -> void:
-	if get_tree().get_nodes_in_group("bugs").size() <= 0:
-		stop_side_feed()
-		emit_signal("wave_complete")
+

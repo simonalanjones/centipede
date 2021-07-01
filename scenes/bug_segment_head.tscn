@@ -19,17 +19,27 @@
 [ext_resource path="res://scripts/bug_segment_head.gd" type="Script" id=17]
 [ext_resource path="res://PressStart2P-vaV7.ttf" type="DynamicFontData" id=18]
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="SpriteFrames" id=4]
 animations = [ {
 "frames": [ ExtResource( 14 ), ExtResource( 16 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 12 ), ExtResource( 13 ) ],
 "loop": true,
 "name": "default",
-"speed": 8.0
+"speed": 30.0
 }, {
 "frames": [ ExtResource( 10 ), ExtResource( 7 ), ExtResource( 1 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 15 ), ExtResource( 11 ), ExtResource( 2 ) ],
 "loop": false,
 "name": "turn",
-"speed": 8.0
+"speed": 15.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 7 ), ExtResource( 1 ), ExtResource( 15 ), ExtResource( 11 ), ExtResource( 2 ) ],
+"loop": false,
+"name": "turn-fast",
+"speed": 30.0
+}, {
+"frames": [ ExtResource( 1 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 15 ) ],
+"loop": true,
+"name": "poisoned",
+"speed": 15.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -46,8 +56,9 @@ collision_mask = 0
 script = ExtResource( 17 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
-frames = SubResource( 1 )
-frame = 6
+frames = SubResource( 4 )
+animation = "turn"
+frame = 7
 playing = true
 centered = false
 
@@ -82,3 +93,5 @@ text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="animation_finished" from="Sprite" to="." method="_on_Sprite_animation_finished"]

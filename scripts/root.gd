@@ -3,6 +3,13 @@ extends Node2D
 # don't forget to use stretch mode 'viewport' and aspect 'ignore'
 onready var viewport: Viewport = get_viewport()
 
+onready	var flea_spawner = get_node("flea_spawner")
+onready	var explosion_spawner = get_node("explosion_spawner")
+onready	var mushroom_map = get_node("mushroom_map")
+onready	var scorpion_spawner = get_node("scorpion_spawner")
+onready	var spider_spawner = get_node("spider_spawner")
+onready	var game_manager = get_node("game_manager")
+onready	var bug_manager = get_node("bug_manager")
 
 func _screen_resized():
 	var window_size = OS.get_window_size()
@@ -24,30 +31,23 @@ func _screen_resized():
 
 func _ready():
 	randomize()
-	var bug_spawner = get_node("bug_spawner")
-	var flea_spawner = get_node("flea_spawner")
-	var explosion_spawner = get_node("explosion_spawner")
-	var mushroom_map = get_node("mushroom_map")
-	var scorpion_spawner = get_node("scorpion_spawner")
-	var spider_spawner = get_node("spider_spawner")
-	var game_manager = get_node("game_manager")
+	#var bug_spawner = get_node("bug_spawner")
+
 		
 	game_manager.spawn_flea = funcref(flea_spawner, "spawn")
-	game_manager.spawn_new_wave = funcref(bug_spawner, "spawn_wave")
+	game_manager.spawn_new_wave = funcref(bug_manager, "create_new")
 	game_manager.spawn_scorpion = funcref(scorpion_spawner, "spawn")
 	game_manager.spawn_explosion = funcref(explosion_spawner, "spawn")
 	game_manager.spawn_spider = funcref(spider_spawner, "spawn")
 	
-	var _c = bug_spawner.connect("segment_hit", game_manager, "segment_hit")
-	var _i = bug_spawner.connect("wave_complete", game_manager, "_on_wave_complete")
+#	var _c = bug_spawner.connect("segment_hit", game_manager, "segment_hit")
+#	var _i = bug_spawner.connect("wave_complete", game_manager, "_on_wave_complete")
 	
+	var _n = bug_manager.connect("segment_hit", game_manager, "segment_hit")
 	var _j = flea_spawner.connect("flea_left_screen", game_manager, "on_flea_left_screen")
 	var _l = flea_spawner.connect("flea_destroyed", game_manager, "flea_destroyed")
 	var _m = spider_spawner.connect("spider_destroyed", game_manager, "on_spider_destroyed")
-	
 	var _g = mushroom_map.connect("points_awarded",  game_manager, "award_points")
-	
-	
 	var _k = scorpion_spawner.connect("scorpion_left_screen", game_manager, "on_scorpion_left_screen")
 	var _b = spider_spawner.connect("spider_left_screen", game_manager, "on_spider_left_screen")
 	var _h = scorpion_spawner.connect("scorpion_destroyed",  game_manager, "on_scorpion_destroyed")

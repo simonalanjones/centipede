@@ -10,3 +10,4 @@ func _process(_delta: float) -> void:
 		else:
 			get_tree().paused = true
 			is_paused = true
+			

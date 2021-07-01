@@ -24,7 +24,8 @@ func _process(_delta: float) -> void:
 	
 	var direction = Vector2.ZERO
 	
-
+ 
+		
 		
 	if Input.is_action_pressed("ui_up"):
 		#if not $RayCastUp.is_colliding():

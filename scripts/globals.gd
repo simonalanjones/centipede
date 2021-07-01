@@ -9,11 +9,15 @@ func player_score() -> int:
 
 func add_score_points(points: int) -> void:
 	score_node.add_points(points)
-	
+
 	
 func should_spawn_flea():
 	return mushroom_map_node.needs_more_infield_mushrooms()
 
+
+func check_map_position(world_position) -> int:
+	return mushroom_map_node.check_map_location(world_position)
+	
 
 func spawn_tilemap_mushroom(world_position) -> void:
 	mushroom_map_node.spawn_at_world_position(world_position)
@@ -29,3 +33,7 @@ func register_tilemap_collision(grid_position: Vector2) -> void:
 
 func poison_tilemap_cell(world_position) -> void:
 	mushroom_map_node.poison_mushroom(world_position)
+	
+	
+func eat_tilemap_cell(world_position) -> void:
+	mushroom_map_node.eat_mushroom(world_position)

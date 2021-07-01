@@ -1,6 +1,5 @@
 extends Node
 
-signal mushroom_spawned
 signal flea_left_screen
 signal flea_destroyed
 

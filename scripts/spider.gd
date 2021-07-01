@@ -9,8 +9,8 @@ const POINTS_AWARDED_FAR = 300
 const SCORE_THRESHOLDS: Array = [ 79999, 99999, 119000, 139000, 159000, 859000 ]
 
 var max_height: int = 12
-var speed_factor:int = 2
-
+var speed_factor:int = 1
+var stop = 0
 
 var vertical_direction: Vector2  # whether we're climbing or descending
 var horizontal_direction:Vector2 # direction left or right 
@@ -29,7 +29,7 @@ func is_at_top_line() -> bool:
 	return position.y <= ( 30 - max_height ) * 8
 	
 # if set to false - movement is vertical only	
-func is_moving_horizontally() -> bool:   # can change from diagonal to vertical only
+func moving_horizontally() -> bool:   # can change from diagonal to vertical only
 	if horizontal_direction == Vector2(1,0) or horizontal_direction == Vector2(-1,0):
 		return true
 	else:
@@ -39,7 +39,7 @@ func is_moving_horizontally() -> bool:   # can change from diagonal to vertical 
 func set_movement_directions():
 	# if not going up and down
 	if is_moving_horizontally == true:
-		if randf() < 0.02:
+		if randf() < 0.01:
 			is_moving_horizontally = false
 	else:
 		if randf() < 0.02:
@@ -47,22 +47,37 @@ func set_movement_directions():
 
 		
 	
-	
 func _process(_delta: float) -> void:
 	
-	set_movement_directions()
-	if is_moving_horizontally == true:
-		global_position += horizontal_direction * speed_factor
-	global_position += vertical_direction * speed_factor
-	
-	if vertical_direction == Vector2(0,1) and is_on_bottom_line():
-		vertical_direction = Vector2(0,-1)
-	elif vertical_direction == Vector2(0,-1) and is_at_top_line():
-		vertical_direction = Vector2(0,1)
+	if $RayCastDown.is_colliding() and vertical_direction == Vector2(0,1):
+		if is_at_top_line() == false:
+			vertical_direction = Vector2(0,-1)
 		
-	if position.x > 240 or position.x < -8:
-		emit_signal("spider_left_screen")
-		queue_free()
+	if $RayCastUp.is_colliding() and vertical_direction == Vector2(0,-1):
+		if is_on_bottom_line() == false:
+			vertical_direction = Vector2(0,1)	
+	
+	
+	if stop == 0:
+		set_movement_directions()
+		if is_moving_horizontally == true:
+			global_position += horizontal_direction * speed_factor
+		global_position += vertical_direction * speed_factor
+		
+		if vertical_direction == Vector2(0,1) and is_on_bottom_line():
+			vertical_direction = Vector2(0,-1)
+		elif vertical_direction == Vector2(0,-1) and is_at_top_line():
+			vertical_direction = Vector2(0,1)
+			
+		if position.x > 240 or position.x < -8:
+			emit_signal("spider_left_screen")
+			queue_free()
+
+	# eat mushroom if spider overlaps tilemap mushroom
+	var spider_centre = Vector2( position.x + 8, position.y + 4)
+	if Globals.check_map_position(spider_centre) != -1:
+		Globals.eat_tilemap_cell(spider_centre)
+
 
 
 func _ready() -> void:
@@ -98,11 +113,18 @@ func _on_Area2D_body_entered(body: Node) -> void:
 	## need to bounce of any instances of bug_segment_base
 	if body is TileMap:
 		pass
-		# spider has touched/eaten mushroom
-		#emit_signal("mushroom_hit", body.world_to_map(position))
-
+		#print(body.collision)
+		
+	
 			
 func _on_Area2D_area_entered(area: Area2D) -> void:
+	
+	if area is BugSegmentBody or area is BugSegmentHead:
+		
+		if vertical_direction == Vector2(0,1):
+			vertical_direction = Vector2(0,-1)
+		elif vertical_direction == Vector2(0,-1):
+			vertical_direction = Vector2(0,1)
 	
 	if area.name == "PlayerShot":
 		
@@ -121,3 +143,6 @@ func _on_Area2D_area_entered(area: Area2D) -> void:
 		Globals.add_score_points(points_awarded)
 
 		queue_free()
+
+
+

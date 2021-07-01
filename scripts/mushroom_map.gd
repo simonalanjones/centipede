@@ -1,6 +1,7 @@
 extends TileMap
 
 signal points_awarded(points)
+#signal sidefeed_triggered
 
 const TILEMAP_NEW_MUSHROOM_CELL = 0
 const TILEMAP_NEW_POISONED_CELL = 4
@@ -15,8 +16,8 @@ var infield_array:Array = []
 
 func _ready() -> void:
 	
-#	for n in get_used_cells():
-#		set_cell(n.x,n.y, TILEMAP_EMPTY_CELL)
+	#for n in get_used_cells():
+	#	set_cell(n.x,n.y, TILEMAP_EMPTY_CELL)
 		
 	Rng.randomize()
 	for _n in range(1,1):
@@ -25,6 +26,9 @@ func _ready() -> void:
 		spawn_at_cell_position(Vector2(x,y))
 
 
+#func _on_sidefeed_triggered():
+#	emit_signal("sidefeed_triggered")
+	
 
 func needs_more_infield_mushrooms() -> bool:
 	var score = Globals.player_score()
@@ -66,7 +70,12 @@ func spawn_at_world_position(world_position: Vector2) -> void:
 func poison_mushroom(world_position: Vector2) -> void:
 	var local_position = world_to_map(world_position)
 	set_cellv(local_position, TILEMAP_NEW_POISONED_CELL)
-	
+
+
+func eat_mushroom(world_position: Vector2) -> void:
+	var mushroom_position = world_to_map(world_position)
+	clear_cell(mushroom_position)
+
 
 func clear_cell(mushroom_position: Vector2):
 	set_cellv(mushroom_position, TILEMAP_EMPTY_CELL)
@@ -74,7 +83,7 @@ func clear_cell(mushroom_position: Vector2):
 	if index != TILEMAP_EMPTY_CELL:
 		infield_array.remove(index)
 				
-			
+
 func register_tilemap_collision(tilemap_position: Vector2) -> void:
 	match get_cellv(tilemap_position):
 		TILEMAP_LAST_MUSHROOM_CELL:
