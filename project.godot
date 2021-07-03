@@ -53,6 +53,11 @@ _global_script_classes=[ {
 "class": "Scorpion",
 "language": "GDScript",
 "path": "res://scripts/scorpion.gd"
+}, {
+"base": "Node",
+"class": "SoundPlayer",
+"language": "GDScript",
+"path": "res://scripts/sound_manager.gd"
 } ]
 _global_script_class_icons={
 "Bug": "",
@@ -63,7 +68,8 @@ _global_script_class_icons={
 "BugSpawner": "",
 "Flea": "",
 "PlayerShot": "",
-"Scorpion": ""
+"Scorpion": "",
+"SoundPlayer": ""
 }
 
 [application]
@@ -75,6 +81,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://scripts/Globals.gd"
+SoundManager="*res://scripts/sound_manager.gd"
 
 [debug]
 

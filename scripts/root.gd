@@ -10,6 +10,7 @@ onready	var scorpion_spawner = get_node("scorpion_spawner")
 onready	var spider_spawner = get_node("spider_spawner")
 onready	var game_manager = get_node("game_manager")
 onready	var bug_manager = get_node("bug_manager")
+onready var player = get_node("player")
 
 func _screen_resized():
 	var window_size = OS.get_window_size()
@@ -39,9 +40,21 @@ func _ready():
 	game_manager.spawn_scorpion = funcref(scorpion_spawner, "spawn")
 	game_manager.spawn_explosion = funcref(explosion_spawner, "spawn")
 	game_manager.spawn_spider = funcref(spider_spawner, "spawn")
+	game_manager.infield_mushroom_count = funcref(mushroom_map, "infield_mushroom_count")
+	game_manager.remove_bugs = funcref(bug_manager, "remove_bugs")
+	game_manager.pause_bug_movement = funcref(bug_manager, "pause_bug_movement")
+	game_manager.resume_bug_movement = funcref(bug_manager, "resume_bug_movement")
+	game_manager.respawn_player = funcref(player, "spawn_player")
 	
 #	var _c = bug_spawner.connect("segment_hit", game_manager, "segment_hit")
 #	var _i = bug_spawner.connect("wave_complete", game_manager, "_on_wave_complete")
+	
+	var _c = player.connect("player_hit", game_manager, "on_player_hit")
+	var _c3 = player.connect("player_hit", bug_manager, "on_player_hit")
+	
+
+	var _e = mushroom_map.connect("mushrooms_respawned",  game_manager, "on_mushrooms_respawned")
+	
 	
 	var _n = bug_manager.connect("segment_hit", game_manager, "segment_hit")
 	var _j = flea_spawner.connect("flea_left_screen", game_manager, "on_flea_left_screen")

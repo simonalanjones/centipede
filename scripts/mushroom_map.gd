@@ -1,5 +1,6 @@
 extends TileMap
 
+signal mushrooms_respawned
 signal points_awarded(points)
 #signal sidefeed_triggered
 
@@ -25,24 +26,22 @@ func _ready() -> void:
 		var y = (Rng.randi() % 30)
 		spawn_at_cell_position(Vector2(x,y))
 
-
-#func _on_sidefeed_triggered():
-#	emit_signal("sidefeed_triggered")
 	
+func respawn() -> void:
+	for y in range(0, 30):
+		for x in range(0, 29):
+			var cell_value:int = get_cell(y,x)
+			if cell_value != TILEMAP_EMPTY_CELL and cell_value != TILEMAP_NEW_MUSHROOM_CELL:
+				set_cell(y, x, TILEMAP_NEW_MUSHROOM_CELL)
+				Globals.spawn_explosion(map_to_world(Vector2(y,x)))
+				SoundManager.play_mushroom_respawn()
+				yield(get_tree().create_timer(0.1), "timeout")
+	emit_signal("mushrooms_respawned")
+			
+		
+func infield_mushroom_count():
+	return infield_array.size()	
 
-func needs_more_infield_mushrooms() -> bool:
-	var score = Globals.player_score()
-	var required:int = 0
-	
-	if score <= 20000:
-		required = 5
-	elif score <= 120000:
-		required = 9
-	else:
-		required = 15 + ((score - 140000) / 20000)
-		
-	return infield_array.size() < required
-		
 		
 func check_map_location(global_position: Vector2) -> int:
 	var local_position = to_local(global_position)
@@ -65,6 +64,7 @@ func segment_hit(segment: BugSegmentBase):
 		
 func spawn_at_world_position(world_position: Vector2) -> void:
 	spawn_at_cell_position(world_to_map(world_position))
+
 	
 
 func poison_mushroom(world_position: Vector2) -> void:

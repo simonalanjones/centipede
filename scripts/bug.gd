@@ -17,14 +17,31 @@ func set_lock_state(state: bool):
 func get_lock_state() -> bool:
 	return is_locked
 
+
+func stop_animation() -> void:
+	for bug in get_children():
+		bug.stop_animation() # routed to base segment
+	
+
+
+		
 	
 func _ready():
 	yield(get_tree(), "idle_frame") # wait for all segment to load in
 	set_body_target_positions()
 	if is_side_feed == true:
 		get_head().is_side_feed = true
-	emit_signal('bug_ready')
+	
+	
+#	if get_head().is_moving_left():
+#		get_head.sprite.flip_h = false
+#		sprite.offset.x = 0
+#	else:
+#		sprite.flip_h = true
+#		sprite.offset.x = -1
 
+	emit_signal('bug_ready')
+	
 
 func move():
 	get_head().move()
@@ -64,7 +81,6 @@ func has_moved_all_body_segments_to_target() -> bool:
 	
 	
 func set_body_target_positions(debug = false):
-	#is_locked = true
 	# set target position on each body segment (not head) starting from index 1
 	# assign target position to current position of previous segment	
 	if debug == true:

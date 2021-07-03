@@ -74,7 +74,7 @@ func _process(_delta: float) -> void:
 			queue_free()
 
 	# eat mushroom if spider overlaps tilemap mushroom
-	var spider_centre = Vector2( position.x + 8, position.y + 4)
+	var spider_centre = Vector2(position.x + 8, position.y + 4)
 	if Globals.check_map_position(spider_centre) != -1:
 		Globals.eat_tilemap_cell(spider_centre)
 
@@ -107,8 +107,6 @@ func _ready() -> void:
 	
 		
 	
-	
-	
 func _on_Area2D_body_entered(body: Node) -> void:
 	## need to bounce of any instances of bug_segment_base
 	if body is TileMap:
@@ -116,7 +114,6 @@ func _on_Area2D_body_entered(body: Node) -> void:
 		#print(body.collision)
 		
 	
-			
 func _on_Area2D_area_entered(area: Area2D) -> void:
 	
 	if area is BugSegmentBody or area is BugSegmentHead:
@@ -141,8 +138,4 @@ func _on_Area2D_area_entered(area: Area2D) -> void:
 		# need destroyed signal to change frequency to 4 seconds rather than 2
 		emit_signal("spider_destroyed")
 		Globals.add_score_points(points_awarded)
-
 		queue_free()
-
-
-

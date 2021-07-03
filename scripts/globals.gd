@@ -2,10 +2,13 @@ extends Node
 
 onready var score_node = get_node("/root/root/ui/score/")
 onready var mushroom_map_node = get_node("/root/root/mushroom_map")
+onready var explosion_node = get_node("/root/root/explosion_spawner")
 
 func player_score() -> int:
 	return score_node.get_score()
 
+func spawn_explosion(world_position: Vector2) -> void:
+	explosion_node.spawn(world_position)
 
 func add_score_points(points: int) -> void:
 	score_node.add_points(points)
@@ -15,6 +18,10 @@ func should_spawn_flea():
 	return mushroom_map_node.needs_more_infield_mushrooms()
 
 
+func respawn_mushrooms() -> void:
+	mushroom_map_node.respawn()
+	
+	
 func check_map_position(world_position) -> int:
 	return mushroom_map_node.check_map_location(world_position)
 	

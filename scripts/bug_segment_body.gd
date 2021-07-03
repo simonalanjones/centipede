@@ -10,7 +10,6 @@ var start_position: Vector2
 var points_awarded:int = 10
 var is_poisoned:bool = false
 
-var trapped = 0
 
 var direction_right = 	{
 		'horizontal_direction': Directions.RIGHT,
@@ -58,6 +57,7 @@ func set_poisoned(state: bool):
 	
 
 func set_direction(direction_vars: Dictionary) -> void:
+	
 	if direction_vars.is_moving_horizontally == true:
 		horizontal_direction = direction_vars.horizontal_direction
 	else:
@@ -68,10 +68,12 @@ func set_direction(direction_vars: Dictionary) -> void:
 	has_reached_target = false
 	
 
+
+## called when the target position has been reached
+## this is syncd to a grid boundary position with the head segment
 func set_direction_vars() -> void:
 
 	var diff:Vector2 = target_position - position
-	
 
 	## target node position: right and below
 	if diff.x > 0 and diff.y > 0:
@@ -79,7 +81,6 @@ func set_direction_vars() -> void:
 			set_direction(direction_right)
 		else:
 			set_direction(direction_down)
-		#print('rb')
 			
 			
 	# target node position: left and below		
@@ -88,12 +89,10 @@ func set_direction_vars() -> void:
 			set_direction(direction_left)
 		else:
 			set_direction(direction_down)
-		#print('lb')
 
 
 	## target node position: right and above
 	elif diff.x > 0 and diff.y < 0:
-		#print('ra')
 		if target_is_moving_vertically:
 			set_direction(direction_right)
 		else:
@@ -101,7 +100,6 @@ func set_direction_vars() -> void:
 		
 	## target node position: left and above		
 	elif diff.x < 0 and diff.y < 0:
-		#print('lb')
 		if target_is_moving_vertically:
 			set_direction(direction_left)
 		else:
@@ -110,7 +108,6 @@ func set_direction_vars() -> void:
 	
 	## target node position: directly above
 	elif diff.x == 0 and diff.y < 0:
-		#print('da')
 		set_direction(direction_up)
 		
 		if is_poisoned == false:
@@ -121,7 +118,6 @@ func set_direction_vars() -> void:
 
 	## target node position: directly below
 	elif diff.x == 0 and diff.y > 0:
-		#print('db')
 		set_direction(direction_down)
 		if is_poisoned == false:
 			make_turn_animation()
@@ -130,12 +126,10 @@ func set_direction_vars() -> void:
 
 	## target node position: right
 	elif diff.y == 0 and diff.x > 0:
-		#print('r')
 		set_direction(direction_right)
 		
 	## target node position: left
 	elif diff.y == 0 and diff.x < 0:
-		#print('l')
 		set_direction(direction_left)
 		
 	else:

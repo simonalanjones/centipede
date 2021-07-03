@@ -31,6 +31,10 @@ func _ready() -> void:
 	set_ortientation()
 
 
+func stop_animation():
+	sprite.playing = false
+
+
 func get_class() -> String:
 	return CLASS_NAME
 	

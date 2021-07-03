@@ -2,7 +2,6 @@ class_name BugSegmentHead
 
 extends BugSegmentBase
 
-#signal side_feed_triggered
 signal set_poisoned
 signal unset_poisoned
 
@@ -11,9 +10,18 @@ var is_poisoned:bool = false
 var is_descending_as_poisoned:bool = false
 var points_awarded:int = 100
 
-
-
-
+func _ready():
+	if horizontal_direction == Directions.LEFT:
+		$Sprite.flip_h = false
+	else:
+		$Sprite.flip_h = true
+		
+	if vertical_direction == Directions.UP:
+		$Sprite.flip_v = true
+	else:
+		$Sprite.flip_v = false
+	
+	
 
 func tilemap_value(screen_position: Vector2) -> int:
 	return Globals.tilemap_cell_value(screen_position) 
@@ -59,11 +67,7 @@ func move() -> void:
 	set_direction_vars()
 	
 	position += get_move_vector() * get_speed()
-	
-#	if is_on_bottom_line() and has_side_feed_triggered == false:
-#		has_side_feed_triggered = true
-		#emit_signal("side_feed_triggered")
-		
+			
 	if is_side_feed == true:
 		if position.x > 6 and horizontal_direction == Directions.RIGHT:
 			is_side_feed = false
@@ -86,6 +90,8 @@ func get_move_vector() -> Vector2:
 	else:
 		print('nothing to return!')
 		return Vector2.ZERO	
+
+
 
 
 func set_direction_vars() -> void:
@@ -127,6 +133,7 @@ func set_direction_vars() -> void:
 			is_moving_vertically = false
 			horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
 			is_descending_as_poisoned = false
+			make_poisoned_turn_animation(horizontal_direction)
 			
 		# bottom of screen horiz move to next square
 		elif is_on_bottom_line() and is_moving_horizontally == true:
@@ -135,6 +142,7 @@ func set_direction_vars() -> void:
 			is_moving_vertically = true
 		else:
 			horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
+			make_poisoned_turn_animation(horizontal_direction)
 			is_moving_horizontally = true
 			is_moving_vertically = false
 			is_poisoned = false
@@ -147,7 +155,6 @@ func set_direction_vars() -> void:
 
 	elif is_on_grid_boundary() and is_off_screen() == false:
 		
-		# modify this - can only go as high as 6th level
 		if is_at_top_of_retreat() and vertical_direction == Directions.UP and is_moving_horizontally == true:
 			vertical_direction = Directions.DOWN 
 				
@@ -165,8 +172,6 @@ func set_direction_vars() -> void:
 				vertical_direction = Directions.UP
 			is_moving_vertically = true
 			is_moving_horizontally = false
-			
-			#make_turn_animation()
 			
 			
 		else:
@@ -215,6 +220,22 @@ func make_poisoned_animation():
 	$Sprite.set_animation('poisoned')
 	$Sprite.frame = 0
 	
+	
+func make_poisoned_turn_animation(direction):
+	if direction == Directions.LEFT:
+		$Sprite.flip_h = false
+	else:
+		$Sprite.flip_h = true
+		
+	if vertical_direction == Directions.UP:
+		$Sprite.flip_v = true
+	else:
+		$Sprite.flip_v = false
+		
+	$Sprite.set_animation('poisoned-turn')
+	$Sprite.frame = 0
+	
+
 
 func make_turn_animation(direction):
 	if direction == Directions.LEFT:
@@ -229,18 +250,3 @@ func make_turn_animation(direction):
 		
 	$Sprite.set_animation('turn-fast')
 	$Sprite.frame = 0
-
-
-func ___flip_horizontal_direction():
-	
-	# get current horizontal direction
-	if horizontal_direction == Directions.LEFT:
-		sprite.flip_h = false
-	else:
-		sprite.flip_h = true
-	$Sprite.set_animation('turn')
-	$Sprite.frame = 0
-		
-	horizontal_direction = Directions.LEFT if horizontal_direction == Directions.RIGHT else Directions.RIGHT
-	
-	

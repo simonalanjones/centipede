@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://scripts/bug_manager.gd" type="Script" id=1]
 [ext_resource path="res://scripts/grid.gd" type="Script" id=2]
@@ -18,6 +18,7 @@
 [ext_resource path="res://scripts/mushroom_map.gd" type="Script" id=16]
 [ext_resource path="res://scripts/explosion_spawner.gd" type="Script" id=17]
 [ext_resource path="res://scripts/bug_spawner_new.gd" type="Script" id=18]
+[ext_resource path="res://sprites/enemy_explosion/exp-frames-tm.png" type="Texture" id=19]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 8, 0, 8, 8, 0, 8 )
@@ -212,6 +213,90 @@ points = PoolVector2Array( 0, 0, 8, 0, 8, 8, 0, 8 )
 "shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
 } ]
 7/z_index = 0
+8/name = "exp-frames-tm.png 8"
+8/texture = ExtResource( 19 )
+8/tex_offset = Vector2( 0, 0 )
+8/modulate = Color( 1, 1, 1, 1 )
+8/region = Rect2( 0, 0, 8, 8 )
+8/tile_mode = 0
+8/occluder_offset = Vector2( 0, 0 )
+8/navigation_offset = Vector2( 0, 0 )
+8/shape_offset = Vector2( 0, 0 )
+8/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+8/shape_one_way = false
+8/shape_one_way_margin = 0.0
+8/shapes = [  ]
+8/z_index = 0
+9/name = "exp-frames-tm.png 9"
+9/texture = ExtResource( 19 )
+9/tex_offset = Vector2( 0, 0 )
+9/modulate = Color( 1, 1, 1, 1 )
+9/region = Rect2( 8, 0, 8, 8 )
+9/tile_mode = 0
+9/occluder_offset = Vector2( 0, 0 )
+9/navigation_offset = Vector2( 0, 0 )
+9/shape_offset = Vector2( 0, 0 )
+9/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+9/shape_one_way = false
+9/shape_one_way_margin = 0.0
+9/shapes = [  ]
+9/z_index = 0
+10/name = "exp-frames-tm.png 10"
+10/texture = ExtResource( 19 )
+10/tex_offset = Vector2( 0, 0 )
+10/modulate = Color( 1, 1, 1, 1 )
+10/region = Rect2( 16, 0, 8, 8 )
+10/tile_mode = 0
+10/occluder_offset = Vector2( 0, 0 )
+10/navigation_offset = Vector2( 0, 0 )
+10/shape_offset = Vector2( 0, 0 )
+10/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+10/shape_one_way = false
+10/shape_one_way_margin = 0.0
+10/shapes = [  ]
+10/z_index = 0
+11/name = "exp-frames-tm.png 11"
+11/texture = ExtResource( 19 )
+11/tex_offset = Vector2( 0, 0 )
+11/modulate = Color( 1, 1, 1, 1 )
+11/region = Rect2( 24, 0, 8, 8 )
+11/tile_mode = 0
+11/occluder_offset = Vector2( 0, 0 )
+11/navigation_offset = Vector2( 0, 0 )
+11/shape_offset = Vector2( 0, 0 )
+11/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+11/shape_one_way = false
+11/shape_one_way_margin = 0.0
+11/shapes = [  ]
+11/z_index = 0
+12/name = "exp-frames-tm.png 12"
+12/texture = ExtResource( 19 )
+12/tex_offset = Vector2( 0, 0 )
+12/modulate = Color( 1, 1, 1, 1 )
+12/region = Rect2( 32, 0, 8, 8 )
+12/tile_mode = 0
+12/occluder_offset = Vector2( 0, 0 )
+12/navigation_offset = Vector2( 0, 0 )
+12/shape_offset = Vector2( 0, 0 )
+12/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+12/shape_one_way = false
+12/shape_one_way_margin = 0.0
+12/shapes = [  ]
+12/z_index = 0
+13/name = "exp-frames-tm.png 13"
+13/texture = ExtResource( 19 )
+13/tex_offset = Vector2( 0, 0 )
+13/modulate = Color( 1, 1, 1, 1 )
+13/region = Rect2( 40, 0, 8, 8 )
+13/tile_mode = 0
+13/occluder_offset = Vector2( 0, 0 )
+13/navigation_offset = Vector2( 0, 0 )
+13/shape_offset = Vector2( 0, 0 )
+13/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+13/shape_one_way = false
+13/shape_one_way_margin = 0.0
+13/shapes = [  ]
+13/z_index = 0
 
 [sub_resource type="RectangleShape2D" id=11]
 extents = Vector2( 118.819, 4.61864 )
@@ -228,6 +313,7 @@ script = ExtResource( 15 )
 
 [node name="flea_timer" type="Timer" parent="game_manager"]
 wait_time = 3.368
+autostart = true
 
 [node name="scorpion_timer" type="Timer" parent="game_manager"]
 wait_time = 5.579
@@ -236,7 +322,7 @@ wait_time = 5.579
 wait_time = 2.0
 
 [node name="WaveDoneCheck" type="Timer" parent="game_manager"]
-wait_time = 3.0
+autostart = true
 
 [node name="bug_manager" type="Node" parent="."]
 script = ExtResource( 1 )
@@ -249,7 +335,7 @@ tile_set = SubResource( 9 )
 cell_size = Vector2( 8, 8 )
 collision_mask = 12
 format = 1
-tile_data = PoolIntArray( 65560, 0, 0, 131093, 0, 0, 131097, 0, 0, 131098, 0, 0, 196632, 0, 0, 196633, 0, 0, 262165, 0, 0, 262168, 0, 0, 262170, 0, 0, 327692, 4, 0, 327704, 0, 0, 327705, 0, 0, 327706, 0, 0, 393226, 4, 0, 393240, 0, 0, 393242, 0, 0, 458764, 0, 0, 458776, 0, 0, 458777, 0, 0, 524298, 0, 0, 524306, 0, 0, 524312, 0, 0, 524314, 0, 0, 589836, 0, 0, 589848, 0, 0, 589849, 0, 0, 655370, 0, 0, 655386, 0, 0, 655389, 0, 0, 720908, 0, 0, 720924, 0, 0, 720925, 0, 0, 786434, 0, 0, 786437, 0, 0, 786442, 0, 0, 786452, 0, 0, 786458, 0, 0, 786460, 0, 0, 786461, 0, 0, 851980, 0, 0, 851988, 0, 0, 851997, 0, 0, 917512, 0, 0, 917524, 0, 0, 917533, 0, 0, 983043, 0, 0, 983065, 0, 0, 983066, 0, 0, 983069, 0, 0, 1048592, 0, 0, 1048601, 0, 0, 1048605, 0, 0, 1179647, 0, 0, 1114120, 0, 0, 1114123, 0, 0, 1114128, 0, 0, 1114129, 0, 0, 1114141, 0, 0, 1179652, 0, 0, 1179661, 0, 0, 1179667, 0, 0, 1179668, 0, 0, 1179677, 0, 0, 1245188, 0, 0, 1245193, 0, 0, 1245194, 0, 0, 1245213, 0, 0, 1310720, 0, 0, 1310724, 0, 0, 1310727, 0, 0, 1310737, 0, 0, 1376260, 0, 0, 1376263, 0, 0, 1376275, 0, 0, 1441796, 0, 0, 1441804, 0, 0, 1441807, 0, 0, 1507349, 0, 0, 1572872, 0, 0, 1638408, 0, 0, 1638411, 0, 0, 1703939, 0, 0, 1703944, 0, 0, 1769475, 0, 0, 1769480, 0, 0, 1769490, 0, 0, 1835011, 0, 0, 1835016, 0, 0, 1835032, 0, 0, 1900547, 0, 0, 1900552, 0, 0, 1900558, 0, 0 )
+tile_data = PoolIntArray( 65560, 0, 0, 131093, 0, 0, 131097, 0, 0, 131098, 0, 0, 196632, 0, 0, 196633, 0, 0, 262165, 0, 0, 262168, 0, 0, 262170, 0, 0, 327692, 4, 0, 327704, 0, 0, 327705, 0, 0, 327706, 0, 0, 393226, 4, 0, 393240, 0, 0, 393242, 0, 0, 458764, 0, 0, 458776, 0, 0, 458777, 0, 0, 524298, 0, 0, 524306, 0, 0, 524312, 0, 0, 524314, 0, 0, 589836, 0, 0, 589848, 0, 0, 589849, 0, 0, 655370, 0, 0, 655386, 0, 0, 655389, 0, 0, 720908, 0, 0, 720924, 0, 0, 720925, 0, 0, 786434, 0, 0, 786437, 0, 0, 786442, 0, 0, 786452, 0, 0, 786458, 0, 0, 786460, 0, 0, 786461, 0, 0, 851980, 0, 0, 851988, 0, 0, 851997, 0, 0, 917512, 0, 0, 917524, 0, 0, 917533, 0, 0, 983043, 0, 0, 983065, 0, 0, 983066, 0, 0, 983069, 0, 0, 1048592, 0, 0, 1048601, 0, 0, 1048605, 0, 0, 1114120, 0, 0, 1114123, 0, 0, 1114128, 0, 0, 1114129, 0, 0, 1114141, 0, 0, 1179652, 0, 0, 1179661, 0, 0, 1179667, 0, 0, 1179668, 0, 0, 1179677, 0, 0, 1245188, 0, 0, 1245193, 0, 0, 1245194, 0, 0, 1245213, 0, 0, 1310720, 0, 0, 1310724, 0, 0, 1310727, 0, 0, 1310737, 0, 0, 1376260, 0, 0, 1376263, 0, 0, 1376275, 0, 0, 1441796, 0, 0, 1441804, 0, 0, 1441807, 0, 0, 1507349, 0, 0, 1572872, 0, 0, 1638408, 0, 0, 1638411, 0, 0, 1703939, 0, 0, 1703944, 0, 0, 1769475, 0, 0, 1769480, 0, 0, 1769490, 0, 0, 1835011, 0, 0, 1835016, 0, 0, 1835032, 0, 0, 1900547, 0, 0, 1900552, 0, 0, 1900558, 0, 0 )
 script = ExtResource( 16 )
 
 [node name="sidefeed_trigger" type="Area2D" parent="mushroom_map"]
@@ -261,7 +347,9 @@ position = Vector2( 120.63, 251.409 )
 shape = SubResource( 11 )
 
 [node name="player" parent="." instance=ExtResource( 6 )]
-position = Vector2( 32, 232 )
+position = Vector2( 120, 245 )
+z_index = 2
+collision_mask = 497
 
 [node name="flea_spawner" type="Node" parent="."]
 script = ExtResource( 4 )
